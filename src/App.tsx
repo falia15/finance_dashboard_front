@@ -1,10 +1,38 @@
-import { Route, Routes } from 'react-router-dom'
-import { Home } from './pages/Home'
+import type { ReactNode } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { useActiveProfile } from './features/profiles/ActiveProfileContext'
+import { ProfileSelectPage } from './features/profiles/ProfileSelectPage'
+import { ProfileFormPage } from './features/profiles/ProfileFormPage'
+import { Dashboard } from './pages/Dashboard'
+
+function RootRedirect() {
+  const { activeProfileId } = useActiveProfile()
+  return <Navigate to={activeProfileId !== null ? '/dashboard' : '/profiles'} replace />
+}
+
+function RequireActiveProfile({ children }: { children: ReactNode }) {
+  const { activeProfileId } = useActiveProfile()
+  if (activeProfileId === null) {
+    return <Navigate to="/profiles" replace />
+  }
+  return children
+}
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<RootRedirect />} />
+      <Route path="/profiles" element={<ProfileSelectPage />} />
+      <Route path="/profiles/new" element={<ProfileFormPage />} />
+      <Route path="/profiles/:id/edit" element={<ProfileFormPage />} />
+      <Route
+        path="/dashboard"
+        element={
+          <RequireActiveProfile>
+            <Dashboard />
+          </RequireActiveProfile>
+        }
+      />
     </Routes>
   )
 }
