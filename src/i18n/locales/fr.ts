@@ -9,11 +9,16 @@ export const fr: TranslationResources = {
   },
   nav: {
     language: 'Langue',
+    profileMenu: 'Menu du profil',
+    changeProfile: 'Changer de profil',
+    settings: 'Paramètres',
   },
   dashboard: {
     title: 'Tableau de bord',
     activeProfile: 'Profil actif : {{name}}',
-    changeProfile: 'Changer de profil',
+  },
+  settings: {
+    title: 'Paramètres',
   },
   profiles: {
     select: {

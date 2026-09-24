@@ -6,6 +6,7 @@ import { useActiveProfile } from './features/profiles/ActiveProfileContext'
 import { ProfileSelectPage } from './features/profiles/ProfileSelectPage'
 import { ProfileFormPage } from './features/profiles/ProfileFormPage'
 import { Dashboard } from './pages/Dashboard'
+import { Settings } from './pages/Settings'
 
 function RootRedirect() {
   const { activeProfileId } = useActiveProfile()
@@ -37,6 +38,14 @@ function App() {
             element={
               <RequireActiveProfile>
                 <Dashboard />
+              </RequireActiveProfile>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <RequireActiveProfile>
+                <Settings />
               </RequireActiveProfile>
             }
           />

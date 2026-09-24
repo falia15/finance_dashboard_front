@@ -7,11 +7,16 @@ export const en = {
   },
   nav: {
     language: 'Language',
+    profileMenu: 'Profile menu',
+    changeProfile: 'Change profile',
+    settings: 'Settings',
   },
   dashboard: {
     title: 'Dashboard',
     activeProfile: 'Active profile: {{name}}',
-    changeProfile: 'Change profile',
+  },
+  settings: {
+    title: 'Settings',
   },
   profiles: {
     select: {
