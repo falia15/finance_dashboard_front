@@ -1,19 +1,24 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { schemaResolver, useForm } from '@mantine/form'
 import { z } from 'zod'
 import { Button, ColorInput, Container, Group, Stack, TextInput, Title } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import { useCreateProfile, useProfiles, useUpdateProfile } from './queries'
 
-const schema = z.object({
-  name: z.string().trim().min(1, 'Le nom est requis'),
-  color: z.string().nullable(),
-})
+function createSchema(t: TFunction) {
+  return z.object({
+    name: z.string().trim().min(1, t('profiles.form.nameRequired')),
+    color: z.string().nullable(),
+  })
+}
 
 const DEFAULT_COLOR = '#8B5CF6'
 
 export function ProfileFormPage() {
+  const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const isEditing = id !== undefined
   const navigate = useNavigate()
@@ -24,9 +29,11 @@ export function ProfileFormPage() {
   const updateProfile = useUpdateProfile()
   const isPending = createProfile.isPending || updateProfile.isPending
 
+  // Schéma recréé au changement de langue pour que les messages d'erreur suivent
+  const schema = useMemo(() => createSchema(t), [t])
   const form = useForm({
     initialValues: { name: '', color: DEFAULT_COLOR as string | null },
-    validate: schemaResolver(schema, { sync: true }),
+    validate: (values) => schemaResolver(schema, { sync: true })(values),
   })
 
   useEffect(() => {
@@ -45,24 +52,29 @@ export function ProfileFormPage() {
       }
       navigate('/profiles')
     } catch {
-      notifications.show({ color: 'red', title: 'Erreur', message: "Impossible d'enregistrer le profil" })
+      notifications.show({ color: 'red', title: t('common.error'), message: t('profiles.form.saveError') })
     }
   })
 
   return (
     <Container size="xs" py="xl">
       <Stack gap="lg">
-        <Title order={2}>{isEditing ? 'Modifier le profil' : 'Nouveau profil'}</Title>
+        <Title order={2}>{isEditing ? t('profiles.form.editTitle') : t('profiles.form.newTitle')}</Title>
         <form onSubmit={handleSubmit}>
           <Stack gap="md">
-            <TextInput label="Nom" placeholder="Ex: Mathilde" required {...form.getInputProps('name')} />
-            <ColorInput label="Couleur" {...form.getInputProps('color')} />
+            <TextInput
+              label={t('profiles.form.name')}
+              placeholder={t('profiles.form.namePlaceholder')}
+              required
+              {...form.getInputProps('name')}
+            />
+            <ColorInput label={t('profiles.form.color')} {...form.getInputProps('color')} />
             <Group justify="flex-end">
               <Button variant="default" onClick={() => navigate('/profiles')}>
-                Annuler
+                {t('common.cancel')}
               </Button>
               <Button type="submit" loading={isPending}>
-                {isEditing ? 'Enregistrer' : 'Créer'}
+                {isEditing ? t('profiles.form.save') : t('profiles.form.create')}
               </Button>
             </Group>
           </Stack>

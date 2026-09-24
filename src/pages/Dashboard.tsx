@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Container, Group, Stack, Text, Title } from '@mantine/core'
+import { useTranslation } from 'react-i18next'
 import { useActiveProfile } from '../features/profiles/ActiveProfileContext'
 import { useProfiles } from '../features/profiles/queries'
 
 export function Dashboard() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { activeProfileId, setActiveProfileId } = useActiveProfile()
   const { data, isLoading } = useProfiles()
@@ -25,11 +27,11 @@ export function Dashboard() {
   return (
     <Container py="xl">
       <Stack gap="md">
-        <Title order={1}>Tableau de bord</Title>
-        <Text>Profil actif : {activeProfile?.name ?? '...'}</Text>
+        <Title order={1}>{t('dashboard.title')}</Title>
+        <Text>{t('dashboard.activeProfile', { name: activeProfile?.name ?? '...' })}</Text>
         <Group>
           <Button variant="default" onClick={handleChangeProfile}>
-            Changer de profil
+            {t('dashboard.changeProfile')}
           </Button>
         </Group>
       </Stack>

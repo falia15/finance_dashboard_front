@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { AppShell } from '@mantine/core'
+import { AppHeader } from './components/AppHeader'
 import { useActiveProfile } from './features/profiles/ActiveProfileContext'
 import { ProfileSelectPage } from './features/profiles/ProfileSelectPage'
 import { ProfileFormPage } from './features/profiles/ProfileFormPage'
@@ -20,20 +22,27 @@ function RequireActiveProfile({ children }: { children: ReactNode }) {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<RootRedirect />} />
-      <Route path="/profiles" element={<ProfileSelectPage />} />
-      <Route path="/profiles/new" element={<ProfileFormPage />} />
-      <Route path="/profiles/:id/edit" element={<ProfileFormPage />} />
-      <Route
-        path="/dashboard"
-        element={
-          <RequireActiveProfile>
-            <Dashboard />
-          </RequireActiveProfile>
-        }
-      />
-    </Routes>
+    <AppShell header={{ height: 50 }}>
+      <AppShell.Header>
+        <AppHeader />
+      </AppShell.Header>
+      <AppShell.Main>
+        <Routes>
+          <Route path="/" element={<RootRedirect />} />
+          <Route path="/profiles" element={<ProfileSelectPage />} />
+          <Route path="/profiles/new" element={<ProfileFormPage />} />
+          <Route path="/profiles/:id/edit" element={<ProfileFormPage />} />
+          <Route
+            path="/dashboard"
+            element={
+              <RequireActiveProfile>
+                <Dashboard />
+              </RequireActiveProfile>
+            }
+          />
+        </Routes>
+      </AppShell.Main>
+    </AppShell>
   )
 }
 
