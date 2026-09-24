@@ -36,7 +36,9 @@ export function AppHeader() {
               <Avatar
                 size="sm"
                 radius="xl"
-                style={{ backgroundColor: activeProfile.color ?? undefined, color: '#fff' }}
+                variant="filled"
+                color={activeProfile.color ?? undefined}
+                autoContrast
               >
                 {activeProfile.name.slice(0, 2).toUpperCase()}
               </Avatar>

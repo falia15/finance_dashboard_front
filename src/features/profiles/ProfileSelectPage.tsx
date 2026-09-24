@@ -68,7 +68,10 @@ export function ProfileSelectPage() {
                   <Avatar
                     size="lg"
                     radius="xl"
-                    style={{ cursor: 'pointer', backgroundColor: profile.color ?? undefined, color: '#fff' }}
+                    variant="filled"
+                    color={profile.color ?? undefined}
+                    autoContrast
+                    style={{ cursor: 'pointer' }}
                     onClick={() => handleSelect(profile)}
                   >
                     {profile.name.slice(0, 2).toUpperCase()}
