@@ -46,7 +46,7 @@ export function ProfileFormPage() {
   const handleSubmit = form.onSubmit(async (values) => {
     try {
       if (isEditing) {
-        // Garde-fou : le formulaire n'est affiché qu'une fois le profil trouvé
+        // Safety net: the form is only rendered once the profile has been found
         if (!existingProfile) return
         await updateProfile.mutateAsync({ id: existingProfile.id, input: values })
       } else {
