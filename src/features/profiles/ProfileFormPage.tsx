@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { schemaResolver, useForm } from '@mantine/form'
 import { z } from 'zod'
-import { Button, ColorInput, Container, Group, Stack, TextInput, Title } from '@mantine/core'
+import { Alert, Button, ColorInput, Container, Group, Loader, Stack, TextInput, Title } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
@@ -22,7 +22,7 @@ export function ProfileFormPage() {
   const { id } = useParams<{ id: string }>()
   const isEditing = id !== undefined
   const navigate = useNavigate()
-  const { data } = useProfiles()
+  const { data, isLoading, isError } = useProfiles()
   const existingProfile = isEditing ? data?.member.find((profile) => profile.id === Number(id)) : undefined
 
   const createProfile = useCreateProfile()
@@ -45,7 +45,9 @@ export function ProfileFormPage() {
 
   const handleSubmit = form.onSubmit(async (values) => {
     try {
-      if (isEditing && existingProfile) {
+      if (isEditing) {
+        // Garde-fou : le formulaire n'est affiché qu'une fois le profil trouvé
+        if (!existingProfile) return
         await updateProfile.mutateAsync({ id: existingProfile.id, input: values })
       } else {
         await createProfile.mutateAsync(values)
@@ -56,10 +58,34 @@ export function ProfileFormPage() {
     }
   })
 
+  const title = <Title order={2}>{isEditing ? t('profiles.form.editTitle') : t('profiles.form.newTitle')}</Title>
+
+  if (isEditing && !existingProfile) {
+    return (
+      <Container size="xs" py="xl">
+        <Stack gap="lg">
+          {title}
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <Alert color="red" title={isError ? t('profiles.select.loadError') : t('profiles.form.notFound')}>
+              <Stack gap="sm" align="flex-start">
+                {isError ? t('profiles.select.loadErrorHint') : t('profiles.form.notFoundHint')}
+                <Button variant="default" onClick={() => navigate('/profiles')}>
+                  {t('profiles.form.backToList')}
+                </Button>
+              </Stack>
+            </Alert>
+          )}
+        </Stack>
+      </Container>
+    )
+  }
+
   return (
     <Container size="xs" py="xl">
       <Stack gap="lg">
-        <Title order={2}>{isEditing ? t('profiles.form.editTitle') : t('profiles.form.newTitle')}</Title>
+        {title}
         <form onSubmit={handleSubmit}>
           <Stack gap="md">
             <TextInput

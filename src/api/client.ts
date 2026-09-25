@@ -1,5 +1,13 @@
 const API_URL = import.meta.env.VITE_API_URL
 
+// Profil actif envoyé dans l'en-tête X-Profile-Id : le back filtre les données
+// sur ce profil (et ses foyers). Tenu à jour par ActiveProfileProvider.
+let activeProfileId: number | null = null
+
+export function setApiActiveProfileId(id: number | null) {
+  activeProfileId = id
+}
+
 export class ApiError extends Error {
   status: number
 
@@ -15,6 +23,7 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
     headers: {
       Accept: 'application/ld+json',
       'Content-Type': 'application/ld+json',
+      ...(activeProfileId !== null && { 'X-Profile-Id': String(activeProfileId) }),
       ...init?.headers,
     },
   })

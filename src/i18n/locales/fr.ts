@@ -41,6 +41,9 @@ export const fr: TranslationResources = {
       save: 'Enregistrer',
       create: 'Créer',
       saveError: "Impossible d'enregistrer le profil",
+      notFound: 'Profil introuvable',
+      notFoundHint: "Ce profil n'existe pas ou a été supprimé.",
+      backToList: 'Retour aux profils',
     },
   },
 }

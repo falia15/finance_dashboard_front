@@ -24,7 +24,7 @@ import type { Profile } from './api'
 export function ProfileSelectPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { setActiveProfileId } = useActiveProfile()
+  const { activeProfileId, setActiveProfileId } = useActiveProfile()
   const { data, isLoading, isError } = useProfiles()
   const deleteProfile = useDeleteProfile()
   const [profileToDelete, setProfileToDelete] = useState<Profile | null>(null)
@@ -41,6 +41,9 @@ export function ProfileSelectPage() {
     if (!profileToDelete) return
     try {
       await deleteProfile.mutateAsync(profileToDelete.id)
+      if (profileToDelete.id === activeProfileId) {
+        setActiveProfileId(null)
+      }
       setProfileToDelete(null)
     } catch {
       notifications.show({ color: 'red', title: t('common.error'), message: t('profiles.select.deleteError') })

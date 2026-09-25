@@ -39,6 +39,9 @@ export const en = {
       save: 'Save',
       create: 'Create',
       saveError: 'Unable to save the profile',
+      notFound: 'Profile not found',
+      notFoundHint: 'This profile does not exist or has been deleted.',
+      backToList: 'Back to profiles',
     },
   },
 }
