@@ -47,6 +47,7 @@ export function AppHeader() {
           <Menu.Dropdown>
             <Menu.Label>{activeProfile.name}</Menu.Label>
             <Menu.Item onClick={handleChangeProfile}>{t('nav.changeProfile')}</Menu.Item>
+            <Menu.Item onClick={() => navigate('/households')}>{t('nav.households')}</Menu.Item>
             <Menu.Item onClick={() => navigate('/settings')}>{t('nav.settings')}</Menu.Item>
           </Menu.Dropdown>
         </Menu>

@@ -5,6 +5,7 @@ import { AppHeader } from './components/AppHeader'
 import { useActiveProfile } from './features/profiles/ActiveProfileContext'
 import { ProfileSelectPage } from './features/profiles/ProfileSelectPage'
 import { ProfileFormPage } from './features/profiles/ProfileFormPage'
+import { HouseholdsPage } from './features/households/HouseholdsPage'
 import { Dashboard } from './pages/Dashboard'
 import { Settings } from './pages/Settings'
 
@@ -38,6 +39,14 @@ function App() {
             element={
               <RequireActiveProfile>
                 <Dashboard />
+              </RequireActiveProfile>
+            }
+          />
+          <Route
+            path="/households"
+            element={
+              <RequireActiveProfile>
+                <HouseholdsPage />
               </RequireActiveProfile>
             }
           />
