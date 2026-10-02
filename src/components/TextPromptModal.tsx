@@ -18,7 +18,10 @@ interface TextPromptModalProps {
   onSubmit: (value: string) => Promise<unknown>
 }
 
-/** Single text field form in a modal (e.g. create/rename a household, add a member). */
+/**
+ * Single text field form in a modal (e.g. create/rename a household, add a
+ * member).
+ */
 export function TextPromptModal({
   opened,
   onClose,
@@ -32,13 +35,17 @@ export function TextPromptModal({
   onSubmit,
 }: TextPromptModalProps) {
   const { t } = useTranslation()
-  const schema = useMemo(() => z.object({ value: z.string().trim().min(1, requiredMessage) }), [requiredMessage])
+  const schema = useMemo(
+    () => z.object({ value: z.string().trim().min(1, requiredMessage) }),
+    [requiredMessage],
+  )
   const form = useForm({
     initialValues: { value: initialValue },
     validate: (values) => schemaResolver(schema, { sync: true })(values),
   })
 
-  // Reset the field every time the modal opens (it can be reused for several items)
+  // Reset the field every time the modal opens (it can be reused for several
+  // items)
   useEffect(() => {
     if (opened) {
       form.setValues({ value: initialValue })
@@ -57,15 +64,31 @@ export function TextPromptModal({
   })
 
   return (
-    <Modal opened={opened} onClose={onClose} title={title}>
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title={title}
+    >
       <form onSubmit={handleSubmit}>
         <Stack gap="md">
-          <TextInput label={label} placeholder={placeholder} required data-autofocus {...form.getInputProps('value')} />
+          <TextInput
+            label={label}
+            placeholder={placeholder}
+            required
+            data-autofocus
+            {...form.getInputProps('value')}
+          />
           <Group justify="flex-end">
-            <Button variant="default" onClick={onClose}>
+            <Button
+              variant="default"
+              onClick={onClose}
+            >
               {t('common.cancel')}
             </Button>
-            <Button type="submit" loading={loading}>
+            <Button
+              type="submit"
+              loading={loading}
+            >
               {submitLabel}
             </Button>
           </Group>

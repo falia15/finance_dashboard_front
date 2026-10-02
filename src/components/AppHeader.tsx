@@ -1,4 +1,10 @@
-import { Avatar, Group, Menu, SegmentedControl, UnstyledButton } from '@mantine/core'
+import {
+  Avatar,
+  Group,
+  Menu,
+  SegmentedControl,
+  UnstyledButton,
+} from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Language } from '../i18n'
@@ -17,7 +23,12 @@ export function AppHeader() {
   }
 
   return (
-    <Group h="100%" px="md" justify="flex-end" gap="sm">
+    <Group
+      h="100%"
+      px="md"
+      justify="flex-end"
+      gap="sm"
+    >
       <SegmentedControl
         size="xs"
         aria-label={t('nav.language')}
@@ -29,7 +40,10 @@ export function AppHeader() {
         ]}
       />
       {activeProfile && (
-        <Menu position="bottom-end" withinPortal>
+        <Menu
+          position="bottom-end"
+          withinPortal
+        >
           <Menu.Target>
             <UnstyledButton aria-label={t('nav.profileMenu')}>
               <Avatar
@@ -45,9 +59,15 @@ export function AppHeader() {
           </Menu.Target>
           <Menu.Dropdown>
             <Menu.Label>{activeProfile.name}</Menu.Label>
-            <Menu.Item onClick={handleChangeProfile}>{t('nav.changeProfile')}</Menu.Item>
-            <Menu.Item onClick={() => navigate('/households')}>{t('nav.households')}</Menu.Item>
-            <Menu.Item onClick={() => navigate('/settings')}>{t('nav.settings')}</Menu.Item>
+            <Menu.Item onClick={handleChangeProfile}>
+              {t('nav.changeProfile')}
+            </Menu.Item>
+            <Menu.Item onClick={() => navigate('/households')}>
+              {t('nav.households')}
+            </Menu.Item>
+            <Menu.Item onClick={() => navigate('/settings')}>
+              {t('nav.settings')}
+            </Menu.Item>
           </Menu.Dropdown>
         </Menu>
       )}

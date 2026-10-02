@@ -1,11 +1,27 @@
-import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createProfile, deleteProfile, listProfiles, updateProfile, type ProfileInput } from './api'
+import {
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
+import {
+  createProfile,
+  deleteProfile,
+  listProfiles,
+  updateProfile,
+  type ProfileInput,
+} from './api'
 
 export const profilesQueryKey = ['profiles'] as const
 
-const profilesQuery = queryOptions({ queryKey: profilesQueryKey, queryFn: listProfiles })
+const profilesQuery = queryOptions({
+  queryKey: profilesQueryKey,
+  queryFn: listProfiles,
+})
 
-/** Profile list, fetched once and shared by every component through the cache. */
+/**
+ * Profile list, fetched once and shared by every component through the cache.
+ */
 export function useProfiles() {
   return useQuery({ ...profilesQuery, select: (data) => data.member })
 }
@@ -22,11 +38,14 @@ export function useProfile(id: number | null) {
 }
 
 /** Every profile mutation refreshes the list. */
-function useProfileMutation<TVariables, TResult>(mutationFn: (variables: TVariables) => Promise<TResult>) {
+function useProfileMutation<TVariables, TResult>(
+  mutationFn: (variables: TVariables) => Promise<TResult>,
+) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: profilesQueryKey }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: profilesQueryKey }),
   })
 }
 
@@ -35,7 +54,10 @@ export function useCreateProfile() {
 }
 
 export function useUpdateProfile() {
-  return useProfileMutation(({ id, input }: { id: number; input: Partial<ProfileInput> }) => updateProfile(id, input))
+  return useProfileMutation(
+    ({ id, input }: { id: number; input: Partial<ProfileInput> }) =>
+      updateProfile(id, input),
+  )
 }
 
 export function useDeleteProfile() {

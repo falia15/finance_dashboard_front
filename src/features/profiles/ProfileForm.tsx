@@ -16,7 +16,9 @@ function createSchema(t: TFunction) {
 const DEFAULT_VALUES: ProfileInput = { name: '', color: '#8B5CF6' }
 
 interface ProfileFormProps {
-  /** Values of the edited profile; empty form with the default color otherwise */
+  /**
+   * Values of the edited profile; empty form with the default color otherwise
+   */
   initialValues?: ProfileInput
   submitLabel: string
   loading: boolean
@@ -24,9 +26,16 @@ interface ProfileFormProps {
   onCancel: () => void
 }
 
-export function ProfileForm({ initialValues = DEFAULT_VALUES, submitLabel, loading, onSubmit, onCancel }: ProfileFormProps) {
+export function ProfileForm({
+  initialValues = DEFAULT_VALUES,
+  submitLabel,
+  loading,
+  onSubmit,
+  onCancel,
+}: ProfileFormProps) {
   const { t } = useTranslation()
-  // Schéma recréé au changement de langue pour que les messages d'erreur suivent
+  // Schéma recréé au changement de langue pour que les messages d'erreur
+  // suivent
   const schema = useMemo(() => createSchema(t), [t])
   const form = useForm({
     initialValues,
@@ -42,12 +51,21 @@ export function ProfileForm({ initialValues = DEFAULT_VALUES, submitLabel, loadi
           required
           {...form.getInputProps('name')}
         />
-        <ColorInput label={t('profiles.form.color')} {...form.getInputProps('color')} />
+        <ColorInput
+          label={t('profiles.form.color')}
+          {...form.getInputProps('color')}
+        />
         <Group justify="flex-end">
-          <Button variant="default" onClick={onCancel}>
+          <Button
+            variant="default"
+            onClick={onCancel}
+          >
             {t('common.cancel')}
           </Button>
-          <Button type="submit" loading={loading}>
+          <Button
+            type="submit"
+            loading={loading}
+          >
             {submitLabel}
           </Button>
         </Group>

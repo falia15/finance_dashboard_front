@@ -16,9 +16,14 @@ interface RenderPageOptions {
  * Renders a page with the app providers. Every other route renders
  * "Navigated to <path>" so tests can assert on redirections.
  */
-export function renderPage(page: ReactElement, { path, url }: RenderPageOptions) {
+export function renderPage(
+  page: ReactElement,
+  { path, url }: RenderPageOptions,
+) {
   // A fresh cache per test, without retries so error states show up at once
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  })
 
   return render(
     <MantineProvider>
@@ -26,8 +31,14 @@ export function renderPage(page: ReactElement, { path, url }: RenderPageOptions)
         <ActiveProfileProvider>
           <MemoryRouter initialEntries={[url]}>
             <Routes>
-              <Route path={path} element={page} />
-              <Route path="*" element={<NavigatedTo />} />
+              <Route
+                path={path}
+                element={page}
+              />
+              <Route
+                path="*"
+                element={<NavigatedTo />}
+              />
             </Routes>
           </MemoryRouter>
         </ActiveProfileProvider>

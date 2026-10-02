@@ -8,7 +8,13 @@ import type { HouseholdMember } from '../api'
 import { useDetachMember } from '../queries'
 
 /** Detaches the member as of today. */
-export function DetachMemberButton({ member, name }: { member: HouseholdMember; name: string }) {
+export function DetachMemberButton({
+  member,
+  name,
+}: {
+  member: HouseholdMember
+  name: string
+}) {
   const { t } = useTranslation()
   const [opened, setOpened] = useState(false)
   const detachMember = useDetachMember()
@@ -25,7 +31,12 @@ export function DetachMemberButton({ member, name }: { member: HouseholdMember; 
 
   return (
     <>
-      <Button size="xs" variant="subtle" color="red" onClick={() => setOpened(true)}>
+      <Button
+        size="xs"
+        variant="subtle"
+        color="red"
+        onClick={() => setOpened(true)}
+      >
         {t('households.members.detach')}
       </Button>
       <ConfirmModal

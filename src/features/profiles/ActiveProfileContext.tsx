@@ -10,7 +10,9 @@ interface ActiveProfileContextValue {
   setActiveProfileId: (id: number | null) => void
 }
 
-const ActiveProfileContext = createContext<ActiveProfileContextValue | null>(null)
+const ActiveProfileContext = createContext<ActiveProfileContextValue | null>(
+  null,
+)
 
 function readStoredProfileId(): number | null {
   try {
@@ -25,7 +27,9 @@ function readStoredProfileId(): number | null {
 
 export function ActiveProfileProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient()
-  const [activeProfileId, setActiveProfileIdState] = useState<number | null>(readStoredProfileId)
+  const [activeProfileId, setActiveProfileIdState] = useState<number | null>(
+    readStoredProfileId,
+  )
 
   function setActiveProfileId(id: number | null) {
     setApiActiveProfileId(id)
@@ -33,7 +37,9 @@ export function ActiveProfileProvider({ children }: { children: ReactNode }) {
     // Le profil n'est pas dans les queryKey (il part en en-tête) : on jette le
     // cache des données de l'ancien profil, sauf la liste des profils.
     if (id !== activeProfileId) {
-      queryClient.removeQueries({ predicate: (query) => query.queryKey[0] !== profilesQueryKey[0] })
+      queryClient.removeQueries({
+        predicate: (query) => query.queryKey[0] !== profilesQueryKey[0],
+      })
     }
     try {
       if (id === null) {
@@ -42,12 +48,15 @@ export function ActiveProfileProvider({ children }: { children: ReactNode }) {
         localStorage.setItem(STORAGE_KEY, String(id))
       }
     } catch {
-      // localStorage indisponible (navigation privée...) — l'état reste utilisable en mémoire
+      // localStorage indisponible (navigation privée...) — l'état reste
+      // utilisable en mémoire
     }
   }
 
   return (
-    <ActiveProfileContext.Provider value={{ activeProfileId, setActiveProfileId }}>
+    <ActiveProfileContext.Provider
+      value={{ activeProfileId, setActiveProfileId }}
+    >
       {children}
     </ActiveProfileContext.Provider>
   )
@@ -56,7 +65,9 @@ export function ActiveProfileProvider({ children }: { children: ReactNode }) {
 export function useActiveProfile() {
   const context = useContext(ActiveProfileContext)
   if (!context) {
-    throw new Error('useActiveProfile must be used within an ActiveProfileProvider')
+    throw new Error(
+      'useActiveProfile must be used within an ActiveProfileProvider',
+    )
   }
   return context
 }

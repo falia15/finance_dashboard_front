@@ -13,7 +13,11 @@ export function AddMemberButton({ household }: { household: Household }) {
 
   return (
     <>
-      <Button size="xs" variant="light" onClick={() => setOpened(true)}>
+      <Button
+        size="xs"
+        variant="light"
+        onClick={() => setOpened(true)}
+      >
         {t('households.members.add')}
       </Button>
       <TextPromptModal

@@ -23,7 +23,9 @@ export function Dashboard() {
     <Container py="xl">
       <Stack gap="md">
         <Title order={1}>{t('dashboard.title')}</Title>
-        <Text>{t('dashboard.activeProfile', { name: activeProfile?.name ?? '...' })}</Text>
+        <Text>
+          {t('dashboard.activeProfile', { name: activeProfile?.name ?? '...' })}
+        </Text>
       </Stack>
     </Container>
   )

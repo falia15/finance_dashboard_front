@@ -11,7 +11,9 @@ export type Language = (typeof SUPPORTED_LANGUAGES)[number]
 function readStoredLanguage(): Language {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    return SUPPORTED_LANGUAGES.includes(raw as Language) ? (raw as Language) : 'en'
+    return SUPPORTED_LANGUAGES.includes(raw as Language)
+      ? (raw as Language)
+      : 'en'
   } catch {
     return 'en'
   }
@@ -22,7 +24,8 @@ i18n.on('languageChanged', (language) => {
   try {
     localStorage.setItem(STORAGE_KEY, language)
   } catch {
-    // localStorage indisponible (navigation privée...) — la langue reste active pour la session
+    // localStorage indisponible (navigation privée...) — la langue reste active
+    // pour la session
   }
 })
 

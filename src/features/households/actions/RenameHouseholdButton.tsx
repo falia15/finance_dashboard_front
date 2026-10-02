@@ -13,7 +13,11 @@ export function RenameHouseholdButton({ household }: { household: Household }) {
 
   return (
     <>
-      <Button size="xs" variant="subtle" onClick={() => setOpened(true)}>
+      <Button
+        size="xs"
+        variant="subtle"
+        onClick={() => setOpened(true)}
+      >
         {t('households.rename')}
       </Button>
       <TextPromptModal

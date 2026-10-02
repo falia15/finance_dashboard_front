@@ -18,12 +18,17 @@ export function useHouseholds() {
   })
 }
 
-/** Every household mutation refreshes the list, members being embedded in it. */
-function useHouseholdMutation<TVariables, TResult>(mutationFn: (variables: TVariables) => Promise<TResult>) {
+/**
+ * Every household mutation refreshes the list, members being embedded in it.
+ */
+function useHouseholdMutation<TVariables, TResult>(
+  mutationFn: (variables: TVariables) => Promise<TResult>,
+) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: householdsQueryKey }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: householdsQueryKey }),
   })
 }
 
@@ -32,7 +37,9 @@ export function useCreateHousehold() {
 }
 
 export function useRenameHousehold() {
-  return useHouseholdMutation(({ id, name }: { id: number; name: string }) => renameHousehold(id, name))
+  return useHouseholdMutation(({ id, name }: { id: number; name: string }) =>
+    renameHousehold(id, name),
+  )
 }
 
 export function useDeleteHousehold() {
@@ -40,11 +47,20 @@ export function useDeleteHousehold() {
 }
 
 export function useAddExternalMember() {
-  return useHouseholdMutation(({ householdId, externalLabel }: { householdId: number; externalLabel: string }) =>
-    addExternalMember(householdId, externalLabel),
+  return useHouseholdMutation(
+    ({
+      householdId,
+      externalLabel,
+    }: {
+      householdId: number
+      externalLabel: string
+    }) => addExternalMember(householdId, externalLabel),
   )
 }
 
 export function useDetachMember() {
-  return useHouseholdMutation(({ id, leftAt }: { id: number; leftAt: string }) => detachMember(id, leftAt))
+  return useHouseholdMutation(
+    ({ id, leftAt }: { id: number; leftAt: string }) =>
+      detachMember(id, leftAt),
+  )
 }

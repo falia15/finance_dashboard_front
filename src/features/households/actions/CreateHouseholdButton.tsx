@@ -12,7 +12,9 @@ export function CreateHouseholdButton() {
 
   return (
     <>
-      <Button onClick={() => setOpened(true)}>{t('households.newHousehold')}</Button>
+      <Button onClick={() => setOpened(true)}>
+        {t('households.newHousehold')}
+      </Button>
       <TextPromptModal
         opened={opened}
         onClose={() => setOpened(false)}
@@ -22,7 +24,11 @@ export function CreateHouseholdButton() {
         requiredMessage={t('households.nameRequired')}
         submitLabel={t('households.create')}
         loading={createHousehold.isPending}
-        onSubmit={(name) => createHousehold.mutateAsync(name, { onError: () => notifyError(t('households.saveError')) })}
+        onSubmit={(name) =>
+          createHousehold.mutateAsync(name, {
+            onError: () => notifyError(t('households.saveError')),
+          })
+        }
       />
     </>
   )

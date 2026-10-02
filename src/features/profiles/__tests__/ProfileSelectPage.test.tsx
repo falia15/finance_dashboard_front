@@ -6,8 +6,20 @@ import { renderPage } from '../../../test/render'
 import { callsWith, jsonResponse, mockFetch } from '../../../test/fetch'
 
 const profiles = [
-  { '@id': '/api/profiles/1', id: 1, name: 'Alice', color: null, createdAt: '2026-09-01T00:00:00+00:00' },
-  { '@id': '/api/profiles/2', id: 2, name: 'Bob', color: null, createdAt: '2026-09-01T00:00:00+00:00' },
+  {
+    '@id': '/api/profiles/1',
+    id: 1,
+    name: 'Alice',
+    color: null,
+    createdAt: '2026-09-01T00:00:00+00:00',
+  },
+  {
+    '@id': '/api/profiles/2',
+    id: 2,
+    name: 'Bob',
+    color: null,
+    createdAt: '2026-09-01T00:00:00+00:00',
+  },
 ]
 
 function mockProfilesApi(list = profiles) {
@@ -18,14 +30,23 @@ function mockProfilesApi(list = profiles) {
 }
 
 function renderSelectPage() {
-  return renderPage(<ProfileSelectPage />, { path: '/profiles', url: '/profiles' })
+  return renderPage(<ProfileSelectPage />, {
+    path: '/profiles',
+    url: '/profiles',
+  })
 }
 
 async function deleteProfile(name: string) {
   const user = userEvent.setup()
-  const card = (await screen.findByText(name)).closest<HTMLElement>('.mantine-Card-root')!
+  const card = (await screen.findByText(name)).closest<HTMLElement>(
+    '.mantine-Card-root',
+  )!
   await user.click(within(card).getByRole('button', { name: 'Delete' }))
-  await user.click(within(await screen.findByRole('dialog')).getByRole('button', { name: 'Delete' }))
+  await user.click(
+    within(await screen.findByRole('dialog')).getByRole('button', {
+      name: 'Delete',
+    }),
+  )
 }
 
 describe('ProfileSelectPage', () => {
@@ -36,7 +57,9 @@ describe('ProfileSelectPage', () => {
 
     await user.click(await screen.findByText('Bob'))
 
-    expect(await screen.findByText('Navigated to /dashboard')).toBeInTheDocument()
+    expect(
+      await screen.findByText('Navigated to /dashboard'),
+    ).toBeInTheDocument()
     expect(localStorage.getItem('activeProfileId')).toBe('2')
   })
 

@@ -9,8 +9,20 @@ import { renderPage } from '../../../test/render'
 import { callsWith, jsonResponse, mockFetch } from '../../../test/fetch'
 
 const profiles = [
-  { '@id': '/api/profiles/1', id: 1, name: 'Alice', color: null, createdAt: '2026-09-01T00:00:00+00:00' },
-  { '@id': '/api/profiles/2', id: 2, name: 'Bob', color: null, createdAt: '2026-09-01T00:00:00+00:00' },
+  {
+    '@id': '/api/profiles/1',
+    id: 1,
+    name: 'Alice',
+    color: null,
+    createdAt: '2026-09-01T00:00:00+00:00',
+  },
+  {
+    '@id': '/api/profiles/2',
+    id: 2,
+    name: 'Bob',
+    color: null,
+    createdAt: '2026-09-01T00:00:00+00:00',
+  },
 ]
 
 const household: Household = {
@@ -46,18 +58,27 @@ const household: Household = {
   ],
 }
 
-/** Answers GET /profiles and GET /households, `write` answers the other calls. */
-function mockHouseholdsApi(households: Household[], write: (method: string, path: string) => Response = () => jsonResponse({})) {
+/**
+ * Answers GET /profiles and GET /households, `write` answers the other calls.
+ */
+function mockHouseholdsApi(
+  households: Household[],
+  write: (method: string, path: string) => Response = () => jsonResponse({}),
+) {
   return mockFetch(({ method, path }) => {
     if (method !== 'GET') return write(method, path)
-    if (path === '/profiles') return jsonResponse({ member: profiles, totalItems: profiles.length })
+    if (path === '/profiles')
+      return jsonResponse({ member: profiles, totalItems: profiles.length })
     return jsonResponse({ member: households, totalItems: households.length })
   })
 }
 
 function renderHouseholdsPage(activeProfileId = 1) {
   localStorage.setItem('activeProfileId', String(activeProfileId))
-  return renderPage(<HouseholdsPage />, { path: '/households', url: '/households' })
+  return renderPage(<HouseholdsPage />, {
+    path: '/households',
+    url: '/households',
+  })
 }
 
 function bodyOf(init: RequestInit | undefined) {
@@ -82,7 +103,9 @@ describe('HouseholdsPage', () => {
     expect(screen.getByText('Partner')).toBeInTheDocument()
     expect(screen.getByText('Active members (2)')).toBeInTheDocument()
     expect(screen.getByText('Past members')).toBeInTheDocument()
-    expect(screen.getByText('From Jan 1, 2026 to Jun 1, 2026')).toBeInTheDocument()
+    expect(
+      screen.getByText('From Jan 1, 2026 to Jun 1, 2026'),
+    ).toBeInTheDocument()
   })
 
   it('creates a household', async () => {
@@ -106,7 +129,9 @@ describe('HouseholdsPage', () => {
     const fetchMock = mockHouseholdsApi([])
     renderHouseholdsPage()
 
-    await user.click(await screen.findByRole('button', { name: 'New household' }))
+    await user.click(
+      await screen.findByRole('button', { name: 'New household' }),
+    )
     await fillPrompt('   ', 'Create')
 
     expect(await screen.findByText('Name is required')).toBeInTheDocument()
@@ -115,10 +140,14 @@ describe('HouseholdsPage', () => {
 
   it('adds an external member', async () => {
     const user = userEvent.setup()
-    const fetchMock = mockHouseholdsApi([household], () => jsonResponse({}, 201))
+    const fetchMock = mockHouseholdsApi([household], () =>
+      jsonResponse({}, 201),
+    )
     renderHouseholdsPage()
 
-    await user.click(await screen.findByRole('button', { name: 'Add a member' }))
+    await user.click(
+      await screen.findByRole('button', { name: 'Add a member' }),
+    )
     await fillPrompt('Roommate', 'Add')
 
     await expect.poll(() => callsWith(fetchMock, 'POST')).toHaveLength(1)
@@ -133,7 +162,11 @@ describe('HouseholdsPage', () => {
     renderHouseholdsPage()
 
     await user.click(await screen.findByRole('button', { name: 'Detach' }))
-    await user.click(within(await screen.findByRole('dialog')).getByRole('button', { name: 'Detach' }))
+    await user.click(
+      within(await screen.findByRole('dialog')).getByRole('button', {
+        name: 'Detach',
+      }),
+    )
 
     await expect.poll(() => callsWith(fetchMock, 'PATCH')).toHaveLength(1)
     const [path, init] = callsWith(fetchMock, 'PATCH')[0]
@@ -148,10 +181,16 @@ describe('HouseholdsPage', () => {
     renderHouseholdsPage()
 
     await user.click(await screen.findByRole('button', { name: 'Delete' }))
-    await user.click(within(await screen.findByRole('dialog')).getByRole('button', { name: 'Delete' }))
+    await user.click(
+      within(await screen.findByRole('dialog')).getByRole('button', {
+        name: 'Delete',
+      }),
+    )
 
     await expect.poll(() => showNotification.mock.calls).toHaveLength(1)
-    expect(showNotification.mock.calls[0][0].message).toMatch(/still has incomes, expenses or fixed expenses attached/)
+    expect(showNotification.mock.calls[0][0].message).toMatch(
+      /still has incomes, expenses or fixed expenses attached/,
+    )
   })
 
   it('hides management actions from a member who is not the owner', async () => {

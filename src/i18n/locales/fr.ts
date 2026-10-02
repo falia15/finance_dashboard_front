@@ -23,7 +23,8 @@ export const fr: TranslationResources = {
   },
   households: {
     title: 'Mon foyer',
-    empty: "Aucun foyer pour l'instant. Crée-en un pour partager revenus, dépenses et charges fixes avec d'autres personnes.",
+    empty:
+      "Aucun foyer pour l'instant. Crée-en un pour partager revenus, dépenses et charges fixes avec d'autres personnes.",
     loadError: 'Impossible de charger les foyers',
     newHousehold: 'Nouveau foyer',
     name: 'Nom',
@@ -35,7 +36,8 @@ export const fr: TranslationResources = {
     rename: 'Renommer',
     renameTitle: 'Renommer le foyer',
     deleteTitle: 'Supprimer le foyer',
-    deleteConfirm: 'Supprimer le foyer « {{name}} » ? Cette action est définitive.',
+    deleteConfirm:
+      'Supprimer le foyer « {{name}} » ? Cette action est définitive.',
     deleteError: 'Impossible de supprimer le foyer',
     deleteBlocked:
       'Ce foyer a encore des revenus, dépenses ou charges fixes rattachés : il ne peut pas être supprimé.',
@@ -69,7 +71,8 @@ export const fr: TranslationResources = {
       cannotDeleteLast: 'Impossible de supprimer le dernier profil',
       newProfile: 'Nouveau profil',
       deleteTitle: 'Supprimer le profil',
-      deleteConfirm: 'Supprimer le profil « {{name}} » ? Cette action est définitive.',
+      deleteConfirm:
+        'Supprimer le profil « {{name}} » ? Cette action est définitive.',
       deleteError: 'Impossible de supprimer le profil',
     },
     form: {

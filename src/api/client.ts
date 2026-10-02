@@ -17,21 +17,31 @@ export class ApiError extends Error {
   }
 }
 
-export const mergePatchHeaders = { 'Content-Type': 'application/merge-patch+json' }
+export const mergePatchHeaders = {
+  'Content-Type': 'application/merge-patch+json',
+}
 
-export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+export async function apiFetch<T>(
+  path: string,
+  init?: RequestInit,
+): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, {
     ...init,
     headers: {
       Accept: 'application/ld+json',
       'Content-Type': 'application/ld+json',
-      ...(activeProfileId !== null && { 'X-Profile-Id': String(activeProfileId) }),
+      ...(activeProfileId !== null && {
+        'X-Profile-Id': String(activeProfileId),
+      }),
       ...init?.headers,
     },
   })
 
   if (!response.ok) {
-    throw new ApiError(`${response.status} ${response.statusText}`, response.status)
+    throw new ApiError(
+      `${response.status} ${response.statusText}`,
+      response.status,
+    )
   }
 
   if (response.status === 204) {

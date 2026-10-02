@@ -11,18 +11,37 @@ interface ConfirmModalProps {
   onConfirm: () => void
 }
 
-export function ConfirmModal({ opened, onClose, title, message, confirmLabel, loading, onConfirm }: ConfirmModalProps) {
+export function ConfirmModal({
+  opened,
+  onClose,
+  title,
+  message,
+  confirmLabel,
+  loading,
+  onConfirm,
+}: ConfirmModalProps) {
   const { t } = useTranslation()
 
   return (
-    <Modal opened={opened} onClose={onClose} title={title}>
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title={title}
+    >
       <Stack gap="md">
         <Text>{message}</Text>
         <Group justify="flex-end">
-          <Button variant="default" onClick={onClose}>
+          <Button
+            variant="default"
+            onClick={onClose}
+          >
             {t('common.cancel')}
           </Button>
-          <Button color="red" loading={loading} onClick={onConfirm}>
+          <Button
+            color="red"
+            loading={loading}
+            onClick={onConfirm}
+          >
             {confirmLabel}
           </Button>
         </Group>

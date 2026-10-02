@@ -1,6 +1,15 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Alert, Card, Container, Loader, SimpleGrid, Stack, Text, Title } from '@mantine/core'
+import {
+  Alert,
+  Card,
+  Container,
+  Loader,
+  SimpleGrid,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core'
 import { useTranslation } from 'react-i18next'
 import { ConfirmModal } from '../../components/ConfirmModal'
 import { notifyError } from '../../lib/notifications'
@@ -43,13 +52,19 @@ export function ProfileSelectPage() {
         {isLoading && <Loader />}
 
         {isError && (
-          <Alert color="red" title={t('profiles.select.loadError')}>
+          <Alert
+            color="red"
+            title={t('profiles.select.loadError')}
+          >
             {t('profiles.select.loadErrorHint')}
           </Alert>
         )}
 
         {profiles && (
-          <SimpleGrid cols={{ base: 2, sm: 3, md: 4 }} spacing="md">
+          <SimpleGrid
+            cols={{ base: 2, sm: 3, md: 4 }}
+            spacing="md"
+          >
             {profiles.map((profile) => (
               <ProfileCard
                 key={profile.id}
@@ -68,7 +83,12 @@ export function ProfileSelectPage() {
               style={{ cursor: 'pointer' }}
               onClick={() => navigate('/profiles/new')}
             >
-              <Stack align="center" justify="center" gap="sm" h="100%">
+              <Stack
+                align="center"
+                justify="center"
+                gap="sm"
+                h="100%"
+              >
                 <Text size="xl">+</Text>
                 <Text fw={500}>{t('profiles.select.newProfile')}</Text>
               </Stack>
@@ -80,7 +100,9 @@ export function ProfileSelectPage() {
           opened={profileToDelete !== null}
           onClose={() => setProfileToDelete(null)}
           title={t('profiles.select.deleteTitle')}
-          message={t('profiles.select.deleteConfirm', { name: profileToDelete?.name })}
+          message={t('profiles.select.deleteConfirm', {
+            name: profileToDelete?.name,
+          })}
           confirmLabel={t('common.delete')}
           loading={deleteProfile.isPending}
           onConfirm={handleConfirmDelete}

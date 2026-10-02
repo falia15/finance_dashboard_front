@@ -24,13 +24,18 @@ interface HouseholdCollection {
   totalItems: number
 }
 
-/** Households the active profile is an active member of (scoped server-side). */
+/**
+ * Households the active profile is an active member of (scoped server-side).
+ */
 export function listHouseholds() {
   return apiFetch<HouseholdCollection>('/households')
 }
 
 export function createHousehold(name: string) {
-  return apiFetch<Household>('/households', { method: 'POST', body: JSON.stringify({ name }) })
+  return apiFetch<Household>('/households', {
+    method: 'POST',
+    body: JSON.stringify({ name }),
+  })
 }
 
 export function renameHousehold(id: number, name: string) {

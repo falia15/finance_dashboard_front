@@ -23,7 +23,10 @@ export function listProfiles() {
 }
 
 export function createProfile(input: ProfileInput) {
-  return apiFetch<Profile>('/profiles', { method: 'POST', body: JSON.stringify(input) })
+  return apiFetch<Profile>('/profiles', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  })
 }
 
 export function updateProfile(id: number, input: Partial<ProfileInput>) {

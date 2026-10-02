@@ -21,7 +21,8 @@ export const en = {
   },
   households: {
     title: 'My household',
-    empty: 'No household yet. Create one to share incomes, expenses and fixed expenses with other people.',
+    empty:
+      'No household yet. Create one to share incomes, expenses and fixed expenses with other people.',
     loadError: 'Unable to load households',
     newHousehold: 'New household',
     name: 'Name',
@@ -33,9 +34,11 @@ export const en = {
     rename: 'Rename',
     renameTitle: 'Rename household',
     deleteTitle: 'Delete household',
-    deleteConfirm: 'Delete the household “{{name}}”? This action cannot be undone.',
+    deleteConfirm:
+      'Delete the household “{{name}}”? This action cannot be undone.',
     deleteError: 'Unable to delete the household',
-    deleteBlocked: 'This household still has incomes, expenses or fixed expenses attached and cannot be deleted.',
+    deleteBlocked:
+      'This household still has incomes, expenses or fixed expenses attached and cannot be deleted.',
     unknownProfile: 'Unknown profile',
     members: {
       active: 'Active members ({{count}})',
@@ -66,7 +69,8 @@ export const en = {
       cannotDeleteLast: 'The last profile cannot be deleted',
       newProfile: 'New profile',
       deleteTitle: 'Delete profile',
-      deleteConfirm: 'Delete the profile “{{name}}”? This action cannot be undone.',
+      deleteConfirm:
+        'Delete the profile “{{name}}”? This action cannot be undone.',
       deleteError: 'Unable to delete the profile',
     },
     form: {
@@ -86,6 +90,9 @@ export const en = {
   },
 }
 
-// Structure de référence : fr.ts (et toute future langue) doit avoir exactement les mêmes clés
-type DeepStringRecord<T> = { [K in keyof T]: T[K] extends string ? string : DeepStringRecord<T[K]> }
+// Structure de référence : fr.ts (et toute future langue) doit avoir exactement
+// les mêmes clés
+type DeepStringRecord<T> = {
+  [K in keyof T]: T[K] extends string ? string : DeepStringRecord<T[K]>
+}
 export type TranslationResources = DeepStringRecord<typeof en>

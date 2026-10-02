@@ -15,17 +15,25 @@ export function DeleteHouseholdButton({ household }: { household: Household }) {
   function handleConfirm() {
     deleteHousehold.mutate(household.id, {
       onSuccess: () => setOpened(false),
-      // 422: incomes/expenses/fixed expenses are still attached to the household
+      // 422: incomes/expenses/fixed expenses are still attached to the
+      // household
       onError: (error) =>
         notifyError(
-          error instanceof ApiError && error.status === 422 ? t('households.deleteBlocked') : t('households.deleteError'),
+          error instanceof ApiError && error.status === 422
+            ? t('households.deleteBlocked')
+            : t('households.deleteError'),
         ),
     })
   }
 
   return (
     <>
-      <Button size="xs" variant="subtle" color="red" onClick={() => setOpened(true)}>
+      <Button
+        size="xs"
+        variant="subtle"
+        color="red"
+        onClick={() => setOpened(true)}
+      >
         {t('common.delete')}
       </Button>
       <ConfirmModal

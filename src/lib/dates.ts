@@ -12,5 +12,7 @@ export function todayIsoDate(now = new Date()) {
  */
 export function formatIsoDate(value: string, language: string) {
   const [year, month, day] = value.slice(0, 10).split('-').map(Number)
-  return new Intl.DateTimeFormat(language, { dateStyle: 'medium' }).format(new Date(year, month - 1, day))
+  return new Intl.DateTimeFormat(language, { dateStyle: 'medium' }).format(
+    new Date(year, month - 1, day),
+  )
 }
