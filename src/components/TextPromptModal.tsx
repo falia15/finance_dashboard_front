@@ -15,10 +15,10 @@ interface TextPromptModalProps {
   initialValue?: string
   loading?: boolean
   /** Called with the trimmed value; the modal stays open if it throws */
-  onSubmit: (value: string) => Promise<void>
+  onSubmit: (value: string) => Promise<unknown>
 }
 
-/** Single text field form in a modal: create/rename a household, add a member. */
+/** Single text field form in a modal (e.g. create/rename a household, add a member). */
 export function TextPromptModal({
   opened,
   onClose,
@@ -38,7 +38,7 @@ export function TextPromptModal({
     validate: (values) => schemaResolver(schema, { sync: true })(values),
   })
 
-  // Reset the field every time the modal opens (it is reused across households)
+  // Reset the field every time the modal opens (it can be reused for several items)
   useEffect(() => {
     if (opened) {
       form.setValues({ value: initialValue })

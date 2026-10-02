@@ -1,64 +1,32 @@
-import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { schemaResolver, useForm } from '@mantine/form'
-import { z } from 'zod'
-import { Alert, Button, ColorInput, Container, Group, Loader, Stack, TextInput, Title } from '@mantine/core'
-import { notifications } from '@mantine/notifications'
+import { Alert, Button, Container, Loader, Stack, Title } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
-import type { TFunction } from 'i18next'
-import { createProfile, updateProfile, useProfiles } from './queries'
-
-function createSchema(t: TFunction) {
-  return z.object({
-    name: z.string().trim().min(1, t('profiles.form.nameRequired')),
-    color: z.string().nullable(),
-  })
-}
-
-const DEFAULT_COLOR = '#8B5CF6'
+import { notifyError } from '../../lib/notifications'
+import type { ProfileInput } from './api'
+import { ProfileForm } from './ProfileForm'
+import { useCreateProfile, useProfile, useUpdateProfile } from './queries'
 
 export function ProfileFormPage() {
   const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const isEditing = id !== undefined
   const navigate = useNavigate()
-  const { data, isLoading, isError } = useProfiles()
-  const existingProfile = isEditing ? data?.member.find((profile) => profile.id === Number(id)) : undefined
+  const { data: existingProfile, isLoading, isError } = useProfile(isEditing ? Number(id) : null)
+  const createProfile = useCreateProfile()
+  const updateProfile = useUpdateProfile()
 
-  const [isSaving, setIsSaving] = useState(false)
+  const goToList = () => navigate('/profiles')
+  const mutationOptions = { onSuccess: goToList, onError: () => notifyError(t('profiles.form.saveError')) }
 
-  // Schéma recréé au changement de langue pour que les messages d'erreur suivent
-  const schema = useMemo(() => createSchema(t), [t])
-  const form = useForm({
-    initialValues: { name: '', color: DEFAULT_COLOR as string | null },
-    validate: (values) => schemaResolver(schema, { sync: true })(values),
-  })
-
-  useEffect(() => {
-    if (existingProfile) {
-      form.setValues({ name: existingProfile.name, color: existingProfile.color })
+  function handleSubmit(values: ProfileInput) {
+    if (isEditing) {
+      // Safety net: the form is only rendered once the profile has been found
+      if (!existingProfile) return
+      updateProfile.mutate({ id: existingProfile.id, input: values }, mutationOptions)
+    } else {
+      createProfile.mutate(values, mutationOptions)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [existingProfile?.id])
-
-  // No reload here: the profiles list is fetched again by the page we navigate to.
-  const handleSubmit = form.onSubmit(async (values) => {
-    setIsSaving(true)
-    try {
-      if (isEditing) {
-        // Safety net: the form is only rendered once the profile has been found
-        if (!existingProfile) return
-        await updateProfile(existingProfile.id, values)
-      } else {
-        await createProfile(values)
-      }
-      navigate('/profiles')
-    } catch {
-      notifications.show({ color: 'red', title: t('common.error'), message: t('profiles.form.saveError') })
-    } finally {
-      setIsSaving(false)
-    }
-  })
+  }
 
   const title = <Title order={2}>{isEditing ? t('profiles.form.editTitle') : t('profiles.form.newTitle')}</Title>
 
@@ -73,7 +41,7 @@ export function ProfileFormPage() {
             <Alert color="red" title={isError ? t('profiles.select.loadError') : t('profiles.form.notFound')}>
               <Stack gap="sm" align="flex-start">
                 {isError ? t('profiles.select.loadErrorHint') : t('profiles.form.notFoundHint')}
-                <Button variant="default" onClick={() => navigate('/profiles')}>
+                <Button variant="default" onClick={goToList}>
                   {t('profiles.form.backToList')}
                 </Button>
               </Stack>
@@ -88,25 +56,13 @@ export function ProfileFormPage() {
     <Container size="xs" py="xl">
       <Stack gap="lg">
         {title}
-        <form onSubmit={handleSubmit}>
-          <Stack gap="md">
-            <TextInput
-              label={t('profiles.form.name')}
-              placeholder={t('profiles.form.namePlaceholder')}
-              required
-              {...form.getInputProps('name')}
-            />
-            <ColorInput label={t('profiles.form.color')} {...form.getInputProps('color')} />
-            <Group justify="flex-end">
-              <Button variant="default" onClick={() => navigate('/profiles')}>
-                {t('common.cancel')}
-              </Button>
-              <Button type="submit" loading={isSaving}>
-                {isEditing ? t('profiles.form.save') : t('profiles.form.create')}
-              </Button>
-            </Group>
-          </Stack>
-        </form>
+        <ProfileForm
+          initialValues={existingProfile ? { name: existingProfile.name, color: existingProfile.color } : undefined}
+          submitLabel={isEditing ? t('profiles.form.save') : t('profiles.form.create')}
+          loading={createProfile.isPending || updateProfile.isPending}
+          onSubmit={handleSubmit}
+          onCancel={goToList}
+        />
       </Stack>
     </Container>
   )

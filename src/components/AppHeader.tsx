@@ -1,19 +1,15 @@
 import { Avatar, Group, Menu, SegmentedControl, UnstyledButton } from '@mantine/core'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Language } from '../i18n'
 import { useActiveProfile } from '../features/profiles/ActiveProfileContext'
-import { useProfiles } from '../features/profiles/queries'
+import { useCurrentProfile } from '../features/profiles/useCurrentProfile'
 
 export function AppHeader() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
-  const { activeProfileId, setActiveProfileId } = useActiveProfile()
-  const { pathname } = useLocation()
-  // The header stays displayed across pages: reload the profiles on each navigation
-  // so that a profile created or edited on another page shows up here.
-  const { data } = useProfiles(pathname)
-  const activeProfile = data?.member.find((profile) => profile.id === activeProfileId)
+  const { setActiveProfileId } = useActiveProfile()
+  const activeProfile = useCurrentProfile()
 
   function handleChangeProfile() {
     setActiveProfileId(null)

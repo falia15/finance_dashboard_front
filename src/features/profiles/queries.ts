@@ -1,22 +1,43 @@
-import { apiFetch, mergePatchHeaders, useApiGet } from '../../api/client'
-import { PROFILES_ROUTE, type Profile, type ProfileCollection, type ProfileInput } from './api'
+import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { createProfile, deleteProfile, listProfiles, updateProfile, type ProfileInput } from './api'
 
-export function useProfiles(refreshKey?: unknown) {
-  return useApiGet<ProfileCollection>(PROFILES_ROUTE, refreshKey)
+export const profilesQueryKey = ['profiles'] as const
+
+const profilesQuery = queryOptions({ queryKey: profilesQueryKey, queryFn: listProfiles })
+
+/** Profile list, fetched once and shared by every component through the cache. */
+export function useProfiles() {
+  return useQuery({ ...profilesQuery, select: (data) => data.member })
 }
 
-export function createProfile(input: ProfileInput) {
-  return apiFetch<Profile>(PROFILES_ROUTE, { method: 'POST', body: JSON.stringify(input) })
-}
-
-export function updateProfile(id: number, input: Partial<ProfileInput>) {
-  return apiFetch<Profile>(`${PROFILES_ROUTE}/${id}`, {
-    method: 'PATCH',
-    headers: mergePatchHeaders,
-    body: JSON.stringify(input),
+/**
+ * One profile, read from the cached list: `undefined` while loading,
+ * `null` once loaded if no profile has this id.
+ */
+export function useProfile(id: number | null) {
+  return useQuery({
+    ...profilesQuery,
+    select: (data) => data.member.find((profile) => profile.id === id) ?? null,
   })
 }
 
-export function deleteProfile(id: number) {
-  return apiFetch<void>(`${PROFILES_ROUTE}/${id}`, { method: 'DELETE' })
+/** Every profile mutation refreshes the list. */
+function useProfileMutation<TVariables, TResult>(mutationFn: (variables: TVariables) => Promise<TResult>) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: profilesQueryKey }),
+  })
+}
+
+export function useCreateProfile() {
+  return useProfileMutation((input: ProfileInput) => createProfile(input))
+}
+
+export function useUpdateProfile() {
+  return useProfileMutation(({ id, input }: { id: number; input: Partial<ProfileInput> }) => updateProfile(id, input))
+}
+
+export function useDeleteProfile() {
+  return useProfileMutation((id: number) => deleteProfile(id))
 }

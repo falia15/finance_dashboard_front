@@ -3,21 +3,21 @@ import { useNavigate } from 'react-router-dom'
 import { Container, Stack, Text, Title } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
 import { useActiveProfile } from '../features/profiles/ActiveProfileContext'
-import { useProfiles } from '../features/profiles/queries'
+import { useCurrentProfile } from '../features/profiles/useCurrentProfile'
 
 export function Dashboard() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { activeProfileId, setActiveProfileId } = useActiveProfile()
-  const { data, isLoading } = useProfiles()
-  const activeProfile = data?.member.find((profile) => profile.id === activeProfileId)
+  const { setActiveProfileId } = useActiveProfile()
+  const activeProfile = useCurrentProfile()
 
+  // The stored profile has been deleted: pick another one
   useEffect(() => {
-    if (!isLoading && data && !activeProfile) {
+    if (activeProfile === null) {
       setActiveProfileId(null)
       navigate('/profiles', { replace: true })
     }
-  }, [isLoading, data, activeProfile, navigate, setActiveProfileId])
+  }, [activeProfile, navigate, setActiveProfileId])
 
   return (
     <Container py="xl">

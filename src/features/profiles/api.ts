@@ -1,4 +1,4 @@
-export const PROFILES_ROUTE = '/profiles'
+import { apiFetch, mergePatchHeaders } from '../../api/client'
 
 export interface Profile {
   '@id': string
@@ -8,7 +8,7 @@ export interface Profile {
   createdAt: string
 }
 
-export interface ProfileCollection {
+interface ProfileCollection {
   member: Profile[]
   totalItems: number
 }
@@ -16,4 +16,24 @@ export interface ProfileCollection {
 export interface ProfileInput {
   name: string
   color: string | null
+}
+
+export function listProfiles() {
+  return apiFetch<ProfileCollection>('/profiles')
+}
+
+export function createProfile(input: ProfileInput) {
+  return apiFetch<Profile>('/profiles', { method: 'POST', body: JSON.stringify(input) })
+}
+
+export function updateProfile(id: number, input: Partial<ProfileInput>) {
+  return apiFetch<Profile>(`/profiles/${id}`, {
+    method: 'PATCH',
+    headers: mergePatchHeaders,
+    body: JSON.stringify(input),
+  })
+}
+
+export function deleteProfile(id: number) {
+  return apiFetch<void>(`/profiles/${id}`, { method: 'DELETE' })
 }

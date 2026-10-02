@@ -1,57 +1,38 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  Alert,
-  Avatar,
-  Button,
-  Card,
-  Container,
-  Group,
-  Loader,
-  Modal,
-  SimpleGrid,
-  Stack,
-  Text,
-  Title,
-  Tooltip,
-} from '@mantine/core'
-import { notifications } from '@mantine/notifications'
+import { Alert, Card, Container, Loader, SimpleGrid, Stack, Text, Title } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
+import { ConfirmModal } from '../../components/ConfirmModal'
+import { notifyError } from '../../lib/notifications'
 import { useActiveProfile } from './ActiveProfileContext'
-import { deleteProfile, useProfiles } from './queries'
+import { ProfileCard } from './ProfileCard'
+import { useDeleteProfile, useProfiles } from './queries'
 import type { Profile } from './api'
 
 export function ProfileSelectPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { activeProfileId, setActiveProfileId } = useActiveProfile()
-  const { data, isLoading, isError, reload } = useProfiles()
+  const { data: profiles, isLoading, isError } = useProfiles()
+  const deleteProfile = useDeleteProfile()
   const [profileToDelete, setProfileToDelete] = useState<Profile | null>(null)
-  const [isDeleting, setIsDeleting] = useState(false)
-
-  const profiles = data?.member ?? []
-  const canDelete = profiles.length > 1
 
   function handleSelect(profile: Profile) {
     setActiveProfileId(profile.id)
     navigate('/dashboard')
   }
 
-  async function handleConfirmDelete() {
+  function handleConfirmDelete() {
     if (!profileToDelete) return
-    setIsDeleting(true)
-    try {
-      await deleteProfile(profileToDelete.id)
-      await reload()
-      if (profileToDelete.id === activeProfileId) {
-        setActiveProfileId(null)
-      }
-      setProfileToDelete(null)
-    } catch {
-      notifications.show({ color: 'red', title: t('common.error'), message: t('profiles.select.deleteError') })
-    } finally {
-      setIsDeleting(false)
-    }
+    deleteProfile.mutate(profileToDelete.id, {
+      onSuccess: () => {
+        if (profileToDelete.id === activeProfileId) {
+          setActiveProfileId(null)
+        }
+        setProfileToDelete(null)
+      },
+      onError: () => notifyError(t('profiles.select.deleteError')),
+    })
   }
 
   return (
@@ -67,50 +48,17 @@ export function ProfileSelectPage() {
           </Alert>
         )}
 
-        {data && (
+        {profiles && (
           <SimpleGrid cols={{ base: 2, sm: 3, md: 4 }} spacing="md">
             {profiles.map((profile) => (
-              <Card key={profile.id} withBorder padding="lg" radius="md">
-                <Stack align="center" gap="sm">
-                  <Avatar
-                    size="lg"
-                    radius="xl"
-                    variant="filled"
-                    color={profile.color ?? undefined}
-                    autoContrast
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleSelect(profile)}
-                  >
-                    {profile.name.slice(0, 2).toUpperCase()}
-                  </Avatar>
-                  <Text fw={500} style={{ cursor: 'pointer' }} onClick={() => handleSelect(profile)}>
-                    {profile.name}
-                  </Text>
-                  <Group gap="xs">
-                    <Button 
-                      size="xs" 
-                      variant="subtle" 
-                      onClick={() => navigate(`/profiles/${profile.id}/edit`)}
-                    >
-                      {t('common.edit')}
-                    </Button>
-                    <Tooltip 
-                      label={t('profiles.select.cannotDeleteLast')} 
-                      disabled={canDelete}
-                      >
-                      <Button
-                        size="xs"
-                        variant="subtle"
-                        color="red"
-                        disabled={!canDelete}
-                        onClick={() => setProfileToDelete(profile)}
-                      >
-                        {t('common.delete')}
-                      </Button>
-                    </Tooltip>
-                  </Group>
-                </Stack>
-              </Card>
+              <ProfileCard
+                key={profile.id}
+                profile={profile}
+                canDelete={profiles.length > 1}
+                onSelect={() => handleSelect(profile)}
+                onEdit={() => navigate(`/profiles/${profile.id}/edit`)}
+                onDelete={() => setProfileToDelete(profile)}
+              />
             ))}
 
             <Card
@@ -128,23 +76,15 @@ export function ProfileSelectPage() {
           </SimpleGrid>
         )}
 
-        <Modal 
-          opened={profileToDelete !== null} 
-          onClose={() => setProfileToDelete(null)} 
+        <ConfirmModal
+          opened={profileToDelete !== null}
+          onClose={() => setProfileToDelete(null)}
           title={t('profiles.select.deleteTitle')}
-        >
-          <Stack gap="md">
-            <Text>{t('profiles.select.deleteConfirm', { name: profileToDelete?.name })}</Text>
-            <Group justify="flex-end">
-              <Button variant="default" onClick={() => setProfileToDelete(null)}>
-                {t('common.cancel')}
-              </Button>
-              <Button color="red" loading={isDeleting} onClick={handleConfirmDelete}>
-                {t('common.delete')}
-              </Button>
-            </Group>
-          </Stack>
-        </Modal>
+          message={t('profiles.select.deleteConfirm', { name: profileToDelete?.name })}
+          confirmLabel={t('common.delete')}
+          loading={deleteProfile.isPending}
+          onConfirm={handleConfirmDelete}
+        />
       </Stack>
     </Container>
   )
