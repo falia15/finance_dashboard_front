@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { ProfileSelectPage } from '../ProfileSelectPage'
-import { renderPage } from '../../../test/render'
-import { callsWith, jsonResponse, mockFetch } from '../../../test/fetch'
+import { ProfileSelectPage } from '#/features/profiles/ProfileSelectPage'
+import { renderPage } from '#/test/render'
+import { callsWith, jsonResponse, mockFetch } from '#/test/fetch'
 
 const profiles = [
   {

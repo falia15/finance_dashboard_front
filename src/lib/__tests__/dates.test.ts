@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatIsoDate, todayIsoDate } from '../dates'
+import { formatIsoDate, todayIsoDate } from '#/lib/dates'
 
 describe('todayIsoDate', () => {
   it('formats the local date with zero padding', () => {

@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { Alert, Button, Container, Loader, Stack, Title } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
-import { notifyError } from '../../lib/notifications'
+import { notifyError } from '#/lib/notifications'
 import type { ProfileInput } from './api'
 import { ProfileForm } from './ProfileForm'
 import { useCreateProfile, useProfile, useUpdateProfile } from './queries'

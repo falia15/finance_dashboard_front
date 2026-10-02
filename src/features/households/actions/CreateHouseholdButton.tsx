@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Button } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
-import { TextPromptModal } from '../../../components/TextPromptModal'
-import { notifyError } from '../../../lib/notifications'
-import { useCreateHousehold } from '../queries'
+import { TextPromptModal } from '#/components/TextPromptModal'
+import { notifyError } from '#/lib/notifications'
+import { useCreateHousehold } from '#/features/households/queries'
 
 export function CreateHouseholdButton() {
   const { t } = useTranslation()

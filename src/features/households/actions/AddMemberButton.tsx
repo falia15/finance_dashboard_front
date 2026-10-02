@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Button } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
-import { TextPromptModal } from '../../../components/TextPromptModal'
-import { notifyError } from '../../../lib/notifications'
-import type { Household } from '../api'
-import { useAddExternalMember } from '../queries'
+import { TextPromptModal } from '#/components/TextPromptModal'
+import { notifyError } from '#/lib/notifications'
+import type { Household } from '#/features/households/api'
+import { useAddExternalMember } from '#/features/households/queries'
 
 export function AddMemberButton({ household }: { household: Household }) {
   const { t } = useTranslation()

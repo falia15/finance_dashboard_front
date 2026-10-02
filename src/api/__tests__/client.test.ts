@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { ApiError, apiFetch, setApiActiveProfileId } from '../client'
-import { jsonResponse, mockFetch } from '../../test/fetch'
+import { ApiError, apiFetch, setApiActiveProfileId } from '#/api/client'
+import { jsonResponse, mockFetch } from '#/test/fetch'
 
 function sentHeaders(
   fetchMock: ReturnType<typeof mockFetch>,

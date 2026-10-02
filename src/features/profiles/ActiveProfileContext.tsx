@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { setApiActiveProfileId } from '../../api/client'
+import { setApiActiveProfileId } from '#/api/client'
 import { profilesQueryKey } from './queries'
 
 const STORAGE_KEY = 'activeProfileId'

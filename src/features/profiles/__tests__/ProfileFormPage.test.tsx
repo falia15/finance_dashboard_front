@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { ProfileFormPage } from '../ProfileFormPage'
-import { renderPage } from '../../../test/render'
-import { callsWith, jsonResponse, mockFetch } from '../../../test/fetch'
+import { ProfileFormPage } from '#/features/profiles/ProfileFormPage'
+import { renderPage } from '#/test/render'
+import { callsWith, jsonResponse, mockFetch } from '#/test/fetch'
 
 const alice = {
   '@id': '/api/profiles/1',

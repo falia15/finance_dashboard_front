@@ -1,6 +1,6 @@
 import { Card, Group, Stack, Text, Title } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
-import { useCurrentProfile } from '../profiles/useCurrentProfile'
+import { useCurrentProfile } from '#/features/profiles/useCurrentProfile'
 import type { Household } from './api'
 import { AddMemberButton } from './actions/AddMemberButton'
 import { DeleteHouseholdButton } from './actions/DeleteHouseholdButton'

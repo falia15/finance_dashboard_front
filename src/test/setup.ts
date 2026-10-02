@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
 import { afterEach, vi } from 'vitest'
-import '../i18n'
+import '#/i18n'
 
 // jsdom lacks the browser APIs Mantine relies on
 window.matchMedia = vi.fn().mockImplementation((query: string) => ({

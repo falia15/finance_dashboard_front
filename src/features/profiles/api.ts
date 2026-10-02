@@ -1,4 +1,4 @@
-import { apiFetch, mergePatchHeaders } from '../../api/client'
+import { apiFetch, mergePatchHeaders } from '#/api/client'
 
 export interface Profile {
   '@id': string

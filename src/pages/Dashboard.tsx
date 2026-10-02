@@ -2,8 +2,8 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Container, Stack, Text, Title } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
-import { useActiveProfile } from '../features/profiles/ActiveProfileContext'
-import { useCurrentProfile } from '../features/profiles/useCurrentProfile'
+import { useActiveProfile } from '#/features/profiles/ActiveProfileContext'
+import { useCurrentProfile } from '#/features/profiles/useCurrentProfile'
 
 export function Dashboard() {
   const { t } = useTranslation()

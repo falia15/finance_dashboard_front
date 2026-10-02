@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Button } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
-import { TextPromptModal } from '../../../components/TextPromptModal'
-import { notifyError } from '../../../lib/notifications'
-import type { Household } from '../api'
-import { useRenameHousehold } from '../queries'
+import { TextPromptModal } from '#/components/TextPromptModal'
+import { notifyError } from '#/lib/notifications'
+import type { Household } from '#/features/households/api'
+import { useRenameHousehold } from '#/features/households/queries'
 
 export function RenameHouseholdButton({ household }: { household: Household }) {
   const { t } = useTranslation()

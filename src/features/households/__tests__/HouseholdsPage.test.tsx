@@ -2,11 +2,11 @@ import { describe, expect, it, vi } from 'vitest'
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { notifications } from '@mantine/notifications'
-import { HouseholdsPage } from '../HouseholdsPage'
-import { todayIsoDate } from '../../../lib/dates'
-import type { Household } from '../api'
-import { renderPage } from '../../../test/render'
-import { callsWith, jsonResponse, mockFetch } from '../../../test/fetch'
+import { HouseholdsPage } from '#/features/households/HouseholdsPage'
+import { todayIsoDate } from '#/lib/dates'
+import type { Household } from '#/features/households/api'
+import { renderPage } from '#/test/render'
+import { callsWith, jsonResponse, mockFetch } from '#/test/fetch'
 
 const profiles = [
   {

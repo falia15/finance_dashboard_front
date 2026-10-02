@@ -3,7 +3,7 @@ import { render } from '@testing-library/react'
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MantineProvider } from '@mantine/core'
-import { ActiveProfileProvider } from '../features/profiles/ActiveProfileContext'
+import { ActiveProfileProvider } from '#/features/profiles/ActiveProfileContext'
 
 interface RenderPageOptions {
   /** Route pattern the page is mounted on, e.g. '/profiles/:id/edit' */

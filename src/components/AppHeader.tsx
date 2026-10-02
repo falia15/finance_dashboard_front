@@ -7,9 +7,9 @@ import {
 } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import type { Language } from '../i18n'
-import { useActiveProfile } from '../features/profiles/ActiveProfileContext'
-import { useCurrentProfile } from '../features/profiles/useCurrentProfile'
+import type { Language } from '#/i18n'
+import { useActiveProfile } from '#/features/profiles/ActiveProfileContext'
+import { useCurrentProfile } from '#/features/profiles/useCurrentProfile'
 
 export function AppHeader() {
   const { t, i18n } = useTranslation()

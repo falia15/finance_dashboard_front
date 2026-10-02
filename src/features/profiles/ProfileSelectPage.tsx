@@ -11,8 +11,8 @@ import {
   Title,
 } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
-import { ConfirmModal } from '../../components/ConfirmModal'
-import { notifyError } from '../../lib/notifications'
+import { ConfirmModal } from '#/components/ConfirmModal'
+import { notifyError } from '#/lib/notifications'
 import { useActiveProfile } from './ActiveProfileContext'
 import { ProfileCard } from './ProfileCard'
 import { useDeleteProfile, useProfiles } from './queries'

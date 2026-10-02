@@ -1,7 +1,7 @@
 import { Badge, Group, Table, Text } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
-import { formatIsoDate } from '../../lib/dates'
-import { useProfiles } from '../profiles/queries'
+import { formatIsoDate } from '#/lib/dates'
+import { useProfiles } from '#/features/profiles/queries'
 import type { HouseholdMember } from './api'
 import { DetachMemberButton } from './actions/DetachMemberButton'
 

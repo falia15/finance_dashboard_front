@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Button } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
-import { ConfirmModal } from '../../../components/ConfirmModal'
-import { todayIsoDate } from '../../../lib/dates'
-import { notifyError } from '../../../lib/notifications'
-import type { HouseholdMember } from '../api'
-import { useDetachMember } from '../queries'
+import { ConfirmModal } from '#/components/ConfirmModal'
+import { todayIsoDate } from '#/lib/dates'
+import { notifyError } from '#/lib/notifications'
+import type { HouseholdMember } from '#/features/households/api'
+import { useDetachMember } from '#/features/households/queries'
 
 /** Detaches the member as of today. */
 export function DetachMemberButton({
