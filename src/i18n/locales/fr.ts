@@ -8,6 +8,10 @@ export const fr: TranslationResources = {
     error: 'Erreur',
   },
   nav: {
+    main: 'Navigation principale',
+    toggleNavigation: 'Afficher/masquer la navigation',
+    dashboard: 'Tableau de bord',
+    incomes: 'Revenus',
     language: 'Langue',
     profileMenu: 'Menu du profil',
     changeProfile: 'Changer de profil',
@@ -17,6 +21,9 @@ export const fr: TranslationResources = {
   dashboard: {
     title: 'Tableau de bord',
     activeProfile: 'Profil actif : {{name}}',
+  },
+  incomes: {
+    title: 'Revenus',
   },
   settings: {
     title: 'Paramètres',

@@ -6,6 +6,10 @@ export const en = {
     error: 'Error',
   },
   nav: {
+    main: 'Main navigation',
+    toggleNavigation: 'Toggle navigation',
+    dashboard: 'Dashboard',
+    incomes: 'Income',
     language: 'Language',
     profileMenu: 'Profile menu',
     changeProfile: 'Change profile',
@@ -15,6 +19,9 @@ export const en = {
   dashboard: {
     title: 'Dashboard',
     activeProfile: 'Active profile: {{name}}',
+  },
+  incomes: {
+    title: 'Income',
   },
   settings: {
     title: 'Settings',

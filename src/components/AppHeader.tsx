@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Burger,
   Group,
   Menu,
   SegmentedControl,
@@ -11,7 +12,13 @@ import type { Language } from '#/i18n'
 import { useActiveProfile } from '#/features/profiles/ActiveProfileContext'
 import { useCurrentProfile } from '#/features/profiles/useCurrentProfile'
 
-export function AppHeader() {
+interface AppHeaderProps {
+  /** Mobile navbar state, `undefined` when the page has no navbar */
+  navbarOpened?: boolean
+  onToggleNavbar?: () => void
+}
+
+export function AppHeader({ navbarOpened, onToggleNavbar }: AppHeaderProps) {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const { setActiveProfileId } = useActiveProfile()
@@ -29,6 +36,16 @@ export function AppHeader() {
       justify="flex-end"
       gap="sm"
     >
+      {navbarOpened !== undefined && (
+        <Burger
+          opened={navbarOpened}
+          onClick={onToggleNavbar}
+          hiddenFrom="sm"
+          size="sm"
+          mr="auto"
+          aria-label={t('nav.toggleNavigation')}
+        />
+      )}
       <SegmentedControl
         size="xs"
         aria-label={t('nav.language')}
