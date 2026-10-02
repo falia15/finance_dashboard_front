@@ -5,27 +5,31 @@ import { useTranslation } from 'react-i18next'
 import { useActiveProfile } from '../profiles/ActiveProfileContext'
 import { useProfiles } from '../profiles/queries'
 import { HouseholdCard } from './HouseholdCard'
-import { useCreateHousehold, useHouseholds } from './queries'
+import { createHousehold, useHouseholds } from './queries'
 import { TextPromptModal } from './TextPromptModal'
 
 export function HouseholdsPage() {
   const { t } = useTranslation()
   const { activeProfileId } = useActiveProfile()
-  const { data, isLoading, isError } = useHouseholds()
+  const { data, isLoading, isError, reload } = useHouseholds()
   const { data: profilesData } = useProfiles()
-  const createHousehold = useCreateHousehold()
   const [createOpened, setCreateOpened] = useState(false)
+  const [isCreating, setIsCreating] = useState(false)
 
   const households = data?.member ?? []
   const profiles = profilesData?.member ?? []
   const activeProfileIri = profiles.find((profile) => profile.id === activeProfileId)?.['@id'] ?? ''
 
   async function handleCreate(name: string) {
+    setIsCreating(true)
     try {
-      await createHousehold.mutateAsync(name)
+      await createHousehold(name)
+      await reload()
     } catch (error) {
       notifications.show({ color: 'red', title: t('common.error'), message: t('households.saveError') })
       throw error
+    } finally {
+      setIsCreating(false)
     }
   }
 
@@ -48,7 +52,13 @@ export function HouseholdsPage() {
         {data && households.length === 0 && <Text c="dimmed">{t('households.empty')}</Text>}
 
         {households.map((household) => (
-          <HouseholdCard key={household.id} household={household} activeProfileIri={activeProfileIri} profiles={profiles} />
+          <HouseholdCard
+            key={household.id}
+            household={household}
+            activeProfileIri={activeProfileIri}
+            profiles={profiles}
+            onChanged={reload}
+          />
         ))}
       </Stack>
 
@@ -60,7 +70,7 @@ export function HouseholdsPage() {
         placeholder={t('households.namePlaceholder')}
         requiredMessage={t('households.nameRequired')}
         submitLabel={t('households.create')}
-        loading={createHousehold.isPending}
+        loading={isCreating}
         onSubmit={handleCreate}
       />
     </Container>

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { schemaResolver, useForm } from '@mantine/form'
 import { z } from 'zod'
@@ -6,7 +6,7 @@ import { Alert, Button, ColorInput, Container, Group, Loader, Stack, TextInput, 
 import { notifications } from '@mantine/notifications'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
-import { useCreateProfile, useProfiles, useUpdateProfile } from './queries'
+import { createProfile, updateProfile, useProfiles } from './queries'
 
 function createSchema(t: TFunction) {
   return z.object({
@@ -25,9 +25,7 @@ export function ProfileFormPage() {
   const { data, isLoading, isError } = useProfiles()
   const existingProfile = isEditing ? data?.member.find((profile) => profile.id === Number(id)) : undefined
 
-  const createProfile = useCreateProfile()
-  const updateProfile = useUpdateProfile()
-  const isPending = createProfile.isPending || updateProfile.isPending
+  const [isSaving, setIsSaving] = useState(false)
 
   // Schéma recréé au changement de langue pour que les messages d'erreur suivent
   const schema = useMemo(() => createSchema(t), [t])
@@ -43,18 +41,22 @@ export function ProfileFormPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [existingProfile?.id])
 
+  // No reload here: the profiles list is fetched again by the page we navigate to.
   const handleSubmit = form.onSubmit(async (values) => {
+    setIsSaving(true)
     try {
       if (isEditing) {
         // Safety net: the form is only rendered once the profile has been found
         if (!existingProfile) return
-        await updateProfile.mutateAsync({ id: existingProfile.id, input: values })
+        await updateProfile(existingProfile.id, values)
       } else {
-        await createProfile.mutateAsync(values)
+        await createProfile(values)
       }
       navigate('/profiles')
     } catch {
       notifications.show({ color: 'red', title: t('common.error'), message: t('profiles.form.saveError') })
+    } finally {
+      setIsSaving(false)
     }
   })
 
@@ -99,7 +101,7 @@ export function ProfileFormPage() {
               <Button variant="default" onClick={() => navigate('/profiles')}>
                 {t('common.cancel')}
               </Button>
-              <Button type="submit" loading={isPending}>
+              <Button type="submit" loading={isSaving}>
                 {isEditing ? t('profiles.form.save') : t('profiles.form.create')}
               </Button>
             </Group>

@@ -7,7 +7,7 @@ import type { Profile } from '../profiles/api'
 import type { Household, HouseholdMember } from './api'
 import { ConfirmModal } from './ConfirmModal'
 import { formatIsoDate, todayIsoDate } from './dates'
-import { useAddExternalMember, useDeleteHousehold, useDetachMember, useRenameHousehold } from './queries'
+import { addExternalMember, deleteHousehold, detachMember, renameHousehold } from './queries'
 import { TextPromptModal } from './TextPromptModal'
 
 interface HouseholdCardProps {
@@ -15,19 +15,19 @@ interface HouseholdCardProps {
   /** IRI of the active profile, e.g. '/api/profiles/1' */
   activeProfileIri: string
   profiles: Profile[]
+  /** Reloads the households list, called after each write */
+  onChanged: () => Promise<void>
 }
 
-export function HouseholdCard({ household, activeProfileIri, profiles }: HouseholdCardProps) {
+export function HouseholdCard({ household, activeProfileIri, profiles, onChanged }: HouseholdCardProps) {
   const { t, i18n } = useTranslation()
-  const renameHousehold = useRenameHousehold()
-  const deleteHousehold = useDeleteHousehold()
-  const addMember = useAddExternalMember()
-  const detachMember = useDetachMember()
 
   const [renameOpened, setRenameOpened] = useState(false)
   const [addMemberOpened, setAddMemberOpened] = useState(false)
   const [deleteOpened, setDeleteOpened] = useState(false)
   const [memberToDetach, setMemberToDetach] = useState<HouseholdMember | null>(null)
+  // A single modal is open at a time, so one flag covers them all
+  const [isSaving, setIsSaving] = useState(false)
 
   const activeMembers = household.members.filter((member) => !member.leftAt)
   const pastMembers = household.members.filter((member) => member.leftAt)
@@ -43,9 +43,20 @@ export function HouseholdCard({ household, activeProfileIri, profiles }: Househo
     notifications.show({ color: 'red', title: t('common.error'), message })
   }
 
+  /** Runs a write then reloads the list, keeping the modal's button in a loading state meanwhile. */
+  async function save(write: () => Promise<unknown>) {
+    setIsSaving(true)
+    try {
+      await write()
+      await onChanged()
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   async function handleRename(name: string) {
     try {
-      await renameHousehold.mutateAsync({ id: household.id, name })
+      await save(() => renameHousehold(household.id, name))
     } catch (error) {
       showError(t('households.saveError'))
       throw error
@@ -54,7 +65,7 @@ export function HouseholdCard({ household, activeProfileIri, profiles }: Househo
 
   async function handleAddMember(externalLabel: string) {
     try {
-      await addMember.mutateAsync({ householdId: household.id, externalLabel })
+      await save(() => addExternalMember(household.id, externalLabel))
     } catch (error) {
       showError(t('households.members.addError'))
       throw error
@@ -64,7 +75,7 @@ export function HouseholdCard({ household, activeProfileIri, profiles }: Househo
   async function handleConfirmDetach() {
     if (!memberToDetach) return
     try {
-      await detachMember.mutateAsync({ id: memberToDetach.id, leftAt: todayIsoDate() })
+      await save(() => detachMember(memberToDetach.id, todayIsoDate()))
       setMemberToDetach(null)
     } catch {
       showError(t('households.members.detachError'))
@@ -73,7 +84,7 @@ export function HouseholdCard({ household, activeProfileIri, profiles }: Househo
 
   async function handleConfirmDelete() {
     try {
-      await deleteHousehold.mutateAsync(household.id)
+      await save(() => deleteHousehold(household.id))
       setDeleteOpened(false)
     } catch (error) {
       // 422: incomes/expenses/fixed expenses are still attached to the household
@@ -173,7 +184,7 @@ export function HouseholdCard({ household, activeProfileIri, profiles }: Househo
         requiredMessage={t('households.nameRequired')}
         submitLabel={t('households.save')}
         initialValue={household.name}
-        loading={renameHousehold.isPending}
+        loading={isSaving}
         onSubmit={handleRename}
       />
 
@@ -185,7 +196,7 @@ export function HouseholdCard({ household, activeProfileIri, profiles }: Househo
         placeholder={t('households.members.labelPlaceholder')}
         requiredMessage={t('households.members.labelRequired')}
         submitLabel={t('households.members.addSubmit')}
-        loading={addMember.isPending}
+        loading={isSaving}
         onSubmit={handleAddMember}
       />
 
@@ -195,7 +206,7 @@ export function HouseholdCard({ household, activeProfileIri, profiles }: Househo
         title={t('households.members.detachTitle')}
         message={t('households.members.detachConfirm', { name: memberToDetach ? memberName(memberToDetach) : '' })}
         confirmLabel={t('households.members.detach')}
-        loading={detachMember.isPending}
+        loading={isSaving}
         onConfirm={handleConfirmDetach}
       />
 
@@ -205,7 +216,7 @@ export function HouseholdCard({ household, activeProfileIri, profiles }: Househo
         title={t('households.deleteTitle')}
         message={t('households.deleteConfirm', { name: household.name })}
         confirmLabel={t('common.delete')}
-        loading={deleteHousehold.isPending}
+        loading={isSaving}
         onConfirm={handleConfirmDelete}
       />
     </Card>

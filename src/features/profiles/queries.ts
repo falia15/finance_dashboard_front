@@ -1,35 +1,22 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createProfile, deleteProfile, listProfiles, updateProfile, type ProfileInput } from './api'
+import { apiFetch, mergePatchHeaders, useApiGet } from '../../api/client'
+import { PROFILES_ROUTE, type Profile, type ProfileCollection, type ProfileInput } from './api'
 
-export const profilesQueryKey = ['profiles'] as const
+export function useProfiles(refreshKey?: unknown) {
+  return useApiGet<ProfileCollection>(PROFILES_ROUTE, refreshKey)
+}
 
-export function useProfiles() {
-  return useQuery({
-    queryKey: profilesQueryKey,
-    queryFn: listProfiles,
+export function createProfile(input: ProfileInput) {
+  return apiFetch<Profile>(PROFILES_ROUTE, { method: 'POST', body: JSON.stringify(input) })
+}
+
+export function updateProfile(id: number, input: Partial<ProfileInput>) {
+  return apiFetch<Profile>(`${PROFILES_ROUTE}/${id}`, {
+    method: 'PATCH',
+    headers: mergePatchHeaders,
+    body: JSON.stringify(input),
   })
 }
 
-export function useCreateProfile() {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: (input: ProfileInput) => createProfile(input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: profilesQueryKey }),
-  })
-}
-
-export function useUpdateProfile() {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: ({ id, input }: { id: number; input: Partial<ProfileInput> }) => updateProfile(id, input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: profilesQueryKey }),
-  })
-}
-
-export function useDeleteProfile() {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: (id: number) => deleteProfile(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: profilesQueryKey }),
-  })
+export function deleteProfile(id: number) {
+  return apiFetch<void>(`${PROFILES_ROUTE}/${id}`, { method: 'DELETE' })
 }

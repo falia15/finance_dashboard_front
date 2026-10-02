@@ -1,7 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
 import { setApiActiveProfileId } from '../../api/client'
-import { profilesQueryKey } from './queries'
 
 const STORAGE_KEY = 'activeProfileId'
 
@@ -24,17 +22,11 @@ function readStoredProfileId(): number | null {
 }
 
 export function ActiveProfileProvider({ children }: { children: ReactNode }) {
-  const queryClient = useQueryClient()
   const [activeProfileId, setActiveProfileIdState] = useState<number | null>(readStoredProfileId)
 
   function setActiveProfileId(id: number | null) {
     setApiActiveProfileId(id)
     setActiveProfileIdState(id)
-    // Le profil n'est pas dans les queryKey (il part en en-tête) : on jette le
-    // cache des données de l'ancien profil, sauf la liste des profils.
-    if (id !== activeProfileId) {
-      queryClient.removeQueries({ predicate: (query) => query.queryKey[0] !== profilesQueryKey[0] })
-    }
     try {
       if (id === null) {
         localStorage.removeItem(STORAGE_KEY)

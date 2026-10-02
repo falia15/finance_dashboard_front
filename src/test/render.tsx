@@ -1,7 +1,6 @@
 import type { ReactElement } from 'react'
 import { render } from '@testing-library/react'
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MantineProvider } from '@mantine/core'
 import { ActiveProfileProvider } from '../features/profiles/ActiveProfileContext'
 
@@ -17,20 +16,16 @@ interface RenderPageOptions {
  * "Navigated to <path>" so tests can assert on redirections.
  */
 export function renderPage(page: ReactElement, { path, url }: RenderPageOptions) {
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
-
   return render(
     <MantineProvider>
-      <QueryClientProvider client={queryClient}>
-        <ActiveProfileProvider>
-          <MemoryRouter initialEntries={[url]}>
-            <Routes>
-              <Route path={path} element={page} />
-              <Route path="*" element={<NavigatedTo />} />
-            </Routes>
-          </MemoryRouter>
-        </ActiveProfileProvider>
-      </QueryClientProvider>
+      <ActiveProfileProvider>
+        <MemoryRouter initialEntries={[url]}>
+          <Routes>
+            <Route path={path} element={page} />
+            <Route path="*" element={<NavigatedTo />} />
+          </Routes>
+        </MemoryRouter>
+      </ActiveProfileProvider>
     </MantineProvider>,
   )
 }

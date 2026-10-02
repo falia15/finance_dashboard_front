@@ -1,5 +1,5 @@
 import { Avatar, Group, Menu, SegmentedControl, UnstyledButton } from '@mantine/core'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Language } from '../i18n'
 import { useActiveProfile } from '../features/profiles/ActiveProfileContext'
@@ -9,7 +9,10 @@ export function AppHeader() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const { activeProfileId, setActiveProfileId } = useActiveProfile()
-  const { data } = useProfiles()
+  const { pathname } = useLocation()
+  // The header stays displayed across pages: reload the profiles on each navigation
+  // so that a profile created or edited on another page shows up here.
+  const { data } = useProfiles(pathname)
   const activeProfile = data?.member.find((profile) => profile.id === activeProfileId)
 
   function handleChangeProfile() {

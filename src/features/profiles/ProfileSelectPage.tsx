@@ -18,16 +18,16 @@ import {
 import { notifications } from '@mantine/notifications'
 import { useTranslation } from 'react-i18next'
 import { useActiveProfile } from './ActiveProfileContext'
-import { useDeleteProfile, useProfiles } from './queries'
+import { deleteProfile, useProfiles } from './queries'
 import type { Profile } from './api'
 
 export function ProfileSelectPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { activeProfileId, setActiveProfileId } = useActiveProfile()
-  const { data, isLoading, isError } = useProfiles()
-  const deleteProfile = useDeleteProfile()
+  const { data, isLoading, isError, reload } = useProfiles()
   const [profileToDelete, setProfileToDelete] = useState<Profile | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const profiles = data?.member ?? []
   const canDelete = profiles.length > 1
@@ -39,14 +39,18 @@ export function ProfileSelectPage() {
 
   async function handleConfirmDelete() {
     if (!profileToDelete) return
+    setIsDeleting(true)
     try {
-      await deleteProfile.mutateAsync(profileToDelete.id)
+      await deleteProfile(profileToDelete.id)
+      await reload()
       if (profileToDelete.id === activeProfileId) {
         setActiveProfileId(null)
       }
       setProfileToDelete(null)
     } catch {
       notifications.show({ color: 'red', title: t('common.error'), message: t('profiles.select.deleteError') })
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -83,10 +87,17 @@ export function ProfileSelectPage() {
                     {profile.name}
                   </Text>
                   <Group gap="xs">
-                    <Button size="xs" variant="subtle" onClick={() => navigate(`/profiles/${profile.id}/edit`)}>
+                    <Button 
+                      size="xs" 
+                      variant="subtle" 
+                      onClick={() => navigate(`/profiles/${profile.id}/edit`)}
+                    >
                       {t('common.edit')}
                     </Button>
-                    <Tooltip label={t('profiles.select.cannotDeleteLast')} disabled={canDelete}>
+                    <Tooltip 
+                      label={t('profiles.select.cannotDeleteLast')} 
+                      disabled={canDelete}
+                      >
                       <Button
                         size="xs"
                         variant="subtle"
@@ -117,14 +128,18 @@ export function ProfileSelectPage() {
           </SimpleGrid>
         )}
 
-        <Modal opened={profileToDelete !== null} onClose={() => setProfileToDelete(null)} title={t('profiles.select.deleteTitle')}>
+        <Modal 
+          opened={profileToDelete !== null} 
+          onClose={() => setProfileToDelete(null)} 
+          title={t('profiles.select.deleteTitle')}
+        >
           <Stack gap="md">
             <Text>{t('profiles.select.deleteConfirm', { name: profileToDelete?.name })}</Text>
             <Group justify="flex-end">
               <Button variant="default" onClick={() => setProfileToDelete(null)}>
                 {t('common.cancel')}
               </Button>
-              <Button color="red" loading={deleteProfile.isPending} onClick={handleConfirmDelete}>
+              <Button color="red" loading={isDeleting} onClick={handleConfirmDelete}>
                 {t('common.delete')}
               </Button>
             </Group>

@@ -1,49 +1,39 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import {
-  addExternalMember,
-  createHousehold,
-  deleteHousehold,
-  detachMember,
-  listHouseholds,
-  renameHousehold,
-} from './api'
+import { apiFetch, mergePatchHeaders, useApiGet } from '../../api/client'
+import { HOUSEHOLD_MEMBERS_ROUTE, HOUSEHOLDS_ROUTE, type Household, type HouseholdCollection, type HouseholdMember } from './api'
 
-export const householdsQueryKey = ['households'] as const
-
+/** Households the active profile is an active member of (scoped server-side). */
 export function useHouseholds() {
-  return useQuery({
-    queryKey: householdsQueryKey,
-    queryFn: listHouseholds,
+  return useApiGet<HouseholdCollection>(HOUSEHOLDS_ROUTE)
+}
+
+export function createHousehold(name: string) {
+  return apiFetch<Household>(HOUSEHOLDS_ROUTE, { method: 'POST', body: JSON.stringify({ name }) })
+}
+
+export function renameHousehold(id: number, name: string) {
+  return apiFetch<Household>(`${HOUSEHOLDS_ROUTE}/${id}`, {
+    method: 'PATCH',
+    headers: mergePatchHeaders,
+    body: JSON.stringify({ name }),
   })
 }
 
-/** Every household mutation refreshes the list, members being embedded in it. */
-function useHouseholdMutation<TVariables, TResult>(mutationFn: (variables: TVariables) => Promise<TResult>) {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: householdsQueryKey }),
+export function deleteHousehold(id: number) {
+  return apiFetch<void>(`${HOUSEHOLDS_ROUTE}/${id}`, { method: 'DELETE' })
+}
+
+export function addExternalMember(householdId: number, externalLabel: string) {
+  return apiFetch<HouseholdMember>(`${HOUSEHOLDS_ROUTE}/${householdId}/members`, {
+    method: 'POST',
+    body: JSON.stringify({ externalLabel }),
   })
 }
 
-export function useCreateHousehold() {
-  return useHouseholdMutation((name: string) => createHousehold(name))
-}
-
-export function useRenameHousehold() {
-  return useHouseholdMutation(({ id, name }: { id: number; name: string }) => renameHousehold(id, name))
-}
-
-export function useDeleteHousehold() {
-  return useHouseholdMutation((id: number) => deleteHousehold(id))
-}
-
-export function useAddExternalMember() {
-  return useHouseholdMutation(({ householdId, externalLabel }: { householdId: number; externalLabel: string }) =>
-    addExternalMember(householdId, externalLabel),
-  )
-}
-
-export function useDetachMember() {
-  return useHouseholdMutation(({ id, leftAt }: { id: number; leftAt: string }) => detachMember(id, leftAt))
+/** `leftAt` as a `YYYY-MM-DD` date */
+export function detachMember(id: number, leftAt: string) {
+  return apiFetch<HouseholdMember>(`${HOUSEHOLD_MEMBERS_ROUTE}/${id}`, {
+    method: 'PATCH',
+    headers: mergePatchHeaders,
+    body: JSON.stringify({ leftAt }),
+  })
 }
