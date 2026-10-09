@@ -8,12 +8,30 @@ export function setApiActiveProfileId(id: number | null) {
   activeProfileId = id
 }
 
+/** A validation error of a 422 response. */
+export interface Violation {
+  propertyPath: string
+  message: string
+}
+
 export class ApiError extends Error {
   status: number
+  /** Validation errors of a 422, empty otherwise */
+  violations: Violation[]
 
-  constructor(message: string, status: number) {
+  constructor(message: string, status: number, violations: Violation[] = []) {
     super(message)
     this.status = status
+    this.violations = violations
+  }
+}
+
+async function readViolations(response: Response): Promise<Violation[]> {
+  try {
+    const body = (await response.json()) as { violations?: Violation[] }
+    return Array.isArray(body.violations) ? body.violations : []
+  } catch {
+    return []
   }
 }
 
@@ -41,6 +59,7 @@ export async function apiFetch<T>(
     throw new ApiError(
       `${response.status} ${response.statusText}`,
       response.status,
+      response.status === 422 ? await readViolations(response) : [],
     )
   }
 

@@ -15,6 +15,8 @@ window.matchMedia = vi.fn().mockImplementation((query: string) => ({
   dispatchEvent: vi.fn(),
 }))
 
+Element.prototype.scrollIntoView = vi.fn()
+
 window.ResizeObserver = class {
   observe() {}
   unobserve() {}

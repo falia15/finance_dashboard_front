@@ -26,7 +26,8 @@ export function renderPage(
   })
 
   return render(
-    <MantineProvider>
+    // env="test": no transitions nor portals, so dropdowns open at once
+    <MantineProvider env="test">
       <QueryClientProvider client={queryClient}>
         <ActiveProfileProvider>
           <MemoryRouter initialEntries={[url]}>

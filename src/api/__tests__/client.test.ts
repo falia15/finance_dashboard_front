@@ -65,4 +65,13 @@ describe('apiFetch', () => {
       status: 422,
     })
   })
+
+  it('exposes the violations of a 422', async () => {
+    const violations = [{ propertyPath: 'type', message: 'Already used.' }]
+    mockFetch(() => jsonResponse({ violations }, 422))
+
+    await expect(
+      apiFetch('/incomes', { method: 'POST' }),
+    ).rejects.toMatchObject({ violations })
+  })
 })

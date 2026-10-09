@@ -1,9 +1,9 @@
 import { Badge, Group, Table, Text } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
 import { formatIsoDate } from '#/lib/dates'
-import { useProfiles } from '#/features/profiles/queries'
 import type { HouseholdMember } from './api'
 import { DetachMemberButton } from './actions/DetachMemberButton'
+import { useMemberName } from './useMemberName'
 
 interface MemberTableProps {
   members: HouseholdMember[]
@@ -13,15 +13,7 @@ interface MemberTableProps {
 
 export function MemberTable({ members, canManage }: MemberTableProps) {
   const { t, i18n } = useTranslation()
-  const { data: profiles = [] } = useProfiles()
-
-  function memberName(member: HouseholdMember) {
-    if (member.externalLabel) return member.externalLabel
-    return (
-      profiles.find((profile) => profile['@id'] === member.profile)?.name ??
-      t('households.unknownProfile')
-    )
-  }
+  const memberName = useMemberName()
 
   function memberPeriod(member: HouseholdMember) {
     const joinedAt = formatIsoDate(member.joinedAt, i18n.language)

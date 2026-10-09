@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next'
 
 interface YearSelectorProps {
   year: number
+  onChange: (year: number) => void
 }
 
-// TODO (étape 9) : lire/écrire l'année dans l'URL (useSearchParams)
-export function YearSelector({ year }: YearSelectorProps) {
+export function YearSelector({ year, onChange }: YearSelectorProps) {
   const { t } = useTranslation()
 
   return (
@@ -14,6 +14,7 @@ export function YearSelector({ year }: YearSelectorProps) {
       <ActionIcon
         variant="default"
         aria-label={t('incomes.previousYear')}
+        onClick={() => onChange(year - 1)}
       >
         ‹
       </ActionIcon>
@@ -26,6 +27,7 @@ export function YearSelector({ year }: YearSelectorProps) {
       <ActionIcon
         variant="default"
         aria-label={t('incomes.nextYear')}
+        onClick={() => onChange(year + 1)}
       >
         ›
       </ActionIcon>
