@@ -286,6 +286,52 @@ describe('IncomesPage', () => {
     })
   })
 
+  it('creates a missing income type from the form and selects it', async () => {
+    const user = userEvent.setup()
+    const prime = {
+      '@id': '/api/income_types/9',
+      id: 9,
+      name: 'Prime',
+      sortOrder: 5,
+    }
+    const fetchMock = mockIncomesApi((_method, path) =>
+      path === '/income_types'
+        ? jsonResponse(prime, 201)
+        : jsonResponse({}, 201),
+    )
+    renderIncomesPage()
+
+    const form = await addFormOf('My income')
+    await user.click(
+      within(form).getByRole('button', { name: 'New income type' }),
+    )
+    const dialog = await screen.findByRole('dialog')
+    await user.type(
+      within(dialog).getByRole('textbox', { name: 'Name' }),
+      'Prime',
+    )
+    await user.click(within(dialog).getByRole('button', { name: 'Create' }))
+    await expect.poll(() => screen.queryByRole('dialog')).toBeNull()
+
+    await pick(form, 'Month', 'June')
+    await user.type(
+      within(form).getByRole('textbox', { name: 'Amount' }),
+      '500',
+    )
+    await user.click(within(form).getByRole('button', { name: 'Add' }))
+
+    await expect.poll(() => callsWith(fetchMock, 'POST')).toHaveLength(2)
+    const [typePost, incomePost] = callsWith(fetchMock, 'POST')
+    expect(typePost[0]).toBe('/income_types')
+    expect(bodyOf(typePost[1])).toEqual({ name: 'Prime', color: null })
+    expect(incomePost[0]).toBe('/incomes')
+    expect(bodyOf(incomePost[1])).toMatchObject({
+      month: 6,
+      type: '/api/income_types/9',
+      amount: '500.00',
+    })
+  })
+
   it('shows a duplicate income on the type field', async () => {
     mockIncomesApi(() =>
       jsonResponse(

@@ -59,6 +59,28 @@ export const fr: TranslationResources = {
       share: 'Ma part',
     },
   },
+  incomeTypes: {
+    title: 'Types de revenu',
+    description:
+      'Communs à tous les profils, dans l’ordre des listes de choix.',
+    new: 'Nouveau type',
+    newTitle: 'Nouveau type de revenu',
+    editTitle: 'Modifier le type de revenu',
+    name: 'Nom',
+    nameRequired: 'Le nom est requis',
+    color: 'Couleur (facultative)',
+    create: 'Créer',
+    save: 'Enregistrer',
+    saveError: "Impossible d'enregistrer le type de revenu",
+    loadError: 'Impossible de charger les types de revenu',
+    moveUp: 'Monter {{name}}',
+    moveDown: 'Descendre {{name}}',
+    deleteTitle: 'Supprimer le type de revenu',
+    deleteConfirm: 'Supprimer le type « {{name}} » ?',
+    deleteBlocked:
+      'Ce type est utilisé par des revenus : change leur type avant de le supprimer.',
+    deleteError: 'Impossible de supprimer le type de revenu',
+  },
   settings: {
     title: 'Paramètres',
   },

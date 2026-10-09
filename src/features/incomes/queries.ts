@@ -5,27 +5,16 @@ import {
   deleteIncome,
   getProfileIncomes,
   listHouseholdIncomes,
-  listIncomeTypes,
   updateIncome,
   type IncomeInput,
   type IncomeOwner,
 } from './api'
-
-export const incomeTypesQueryKey = ['incomeTypes'] as const
 
 export const incomesQueryKey = (profileId: number, year: number) =>
   ['incomes', profileId, year] as const
 
 export const householdIncomesQueryKey = (householdId: number, year: number) =>
   ['householdIncomes', householdId, year] as const
-
-export function useIncomeTypes() {
-  return useQuery({
-    queryKey: incomeTypesQueryKey,
-    queryFn: listIncomeTypes,
-    select: (data) => data.member,
-  })
-}
 
 /** The active profile's year: its incomes, household shares and totals. */
 export function useProfileIncomes(year: number) {

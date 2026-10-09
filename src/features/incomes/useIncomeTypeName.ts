@@ -1,4 +1,4 @@
-import { useIncomeTypes } from './queries'
+import { useIncomeTypes } from '#/features/incomeTypes/queries'
 
 /** Name of an income type from its IRI (types are data: shown untranslated). */
 export function useIncomeTypeName() {

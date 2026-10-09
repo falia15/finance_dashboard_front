@@ -1,4 +1,5 @@
-import { Button, Group, Select } from '@mantine/core'
+import { useState } from 'react'
+import { ActionIcon, Button, Group, Select } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useTranslation } from 'react-i18next'
 import { ApiError } from '#/api/client'
@@ -12,7 +13,11 @@ import {
   type IncomeFormValues,
 } from './incomeFormValues'
 import { MoneyInput } from './Money'
-import { useIncomeTypes } from './queries'
+import { IncomeTypeFormModal } from '#/features/incomeTypes/IncomeTypeFormModal'
+import {
+  useCreateIncomeType,
+  useIncomeTypes,
+} from '#/features/incomeTypes/queries'
 
 const FORM_FIELDS = ['month', 'type', 'amount', 'member']
 
@@ -39,6 +44,8 @@ export function IncomeForm({
 }: IncomeFormProps) {
   const { t, i18n } = useTranslation()
   const { data: incomeTypes = [] } = useIncomeTypes()
+  const createIncomeType = useCreateIncomeType()
+  const [creatingType, setCreatingType] = useState(false)
   const form = useForm<IncomeFormValues>({
     initialValues,
     validate: {
@@ -97,59 +104,94 @@ export function IncomeForm({
   }
 
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)}>
-      <Group
-        align="flex-start"
-        gap="sm"
-      >
-        <Select
-          label={t('incomes.form.month')}
-          data={monthOptions}
-          allowDeselect={false}
-          w={150}
-          {...form.getInputProps('month')}
-        />
-        <Select
-          label={t('incomes.form.type')}
-          data={typeOptions}
-          flex={1}
-          miw={180}
-          {...form.getInputProps('type')}
-        />
-        <MoneyInput
-          label={t('incomes.form.amount')}
-          w={140}
-          {...form.getInputProps('amount')}
-        />
-        {splitOptions && (
-          <Select
-            label={t('incomes.household.splitBetween')}
-            data={splitOptions}
-            allowDeselect={false}
-            w={180}
-            {...form.getInputProps('member')}
-          />
-        )}
+    <>
+      <form onSubmit={form.onSubmit(handleSubmit)}>
         <Group
-          gap="xs"
-          mt={25}
+          align="flex-start"
+          gap="sm"
         >
-          {onCancel && (
-            <Button
-              variant="default"
-              onClick={onCancel}
-            >
-              {t('common.cancel')}
-            </Button>
-          )}
-          <Button
-            type="submit"
-            loading={form.submitting}
+          <Select
+            label={t('incomes.form.month')}
+            data={monthOptions}
+            allowDeselect={false}
+            w={150}
+            {...form.getInputProps('month')}
+          />
+          <Group
+            gap={4}
+            align="flex-end"
+            flex={1}
+            miw={200}
+            wrap="nowrap"
           >
-            {submitLabel}
-          </Button>
+            <Select
+              label={t('incomes.form.type')}
+              data={typeOptions}
+              flex={1}
+              {...form.getInputProps('type')}
+            />
+            <ActionIcon
+              variant="default"
+              size="input-sm"
+              mb={form.errors.type ? 22 : 0}
+              aria-label={t('incomeTypes.newTitle')}
+              onClick={() => setCreatingType(true)}
+            >
+              +
+            </ActionIcon>
+          </Group>
+          <MoneyInput
+            label={t('incomes.form.amount')}
+            w={140}
+            {...form.getInputProps('amount')}
+          />
+          {splitOptions && (
+            <Select
+              label={t('incomes.household.splitBetween')}
+              data={splitOptions}
+              allowDeselect={false}
+              w={180}
+              {...form.getInputProps('member')}
+            />
+          )}
+          <Group
+            gap="xs"
+            mt={25}
+          >
+            {onCancel && (
+              <Button
+                variant="default"
+                onClick={onCancel}
+              >
+                {t('common.cancel')}
+              </Button>
+            )}
+            <Button
+              type="submit"
+              loading={form.submitting}
+            >
+              {submitLabel}
+            </Button>
+          </Group>
         </Group>
-      </Group>
-    </form>
+      </form>
+      {/* Outside the form: its own submit mustn't reach the income form */}
+      <IncomeTypeFormModal
+        opened={creatingType}
+        onClose={() => setCreatingType(false)}
+        title={t('incomeTypes.newTitle')}
+        submitLabel={t('incomeTypes.create')}
+        loading={createIncomeType.isPending}
+        onSubmit={async (typeInput) => {
+          try {
+            const type = await createIncomeType.mutateAsync(typeInput)
+            form.setFieldValue('type', type['@id'])
+          } catch (error) {
+            notifyError(t('incomeTypes.saveError'))
+            throw error
+          }
+        }}
+      />
+    </>
   )
 }

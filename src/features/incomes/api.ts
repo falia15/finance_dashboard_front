@@ -2,14 +2,6 @@ import { apiFetch, mergePatchHeaders } from '#/api/client'
 
 // Montants : chaînes décimales de l'API ("2073.00"), cf. `#/lib/money`.
 
-export interface IncomeType {
-  '@id': string
-  id: number
-  name: string
-  color?: string | null
-  sortOrder: number
-}
-
 /** A raw income row (`/incomes` CRUD). */
 export interface Income {
   '@id': string
@@ -81,11 +73,6 @@ export interface IncomeInput {
 
 /** Exactly one owner: the profile or a household. */
 export type IncomeOwner = { profile: string } | { household: string }
-
-/** Income types, sorted by `sortOrder` by the API. */
-export function listIncomeTypes() {
-  return apiFetch<Collection<IncomeType>>('/income_types')
-}
 
 export function getProfileIncomes(profileId: number, year: number) {
   return apiFetch<ProfileIncomeYear>(
