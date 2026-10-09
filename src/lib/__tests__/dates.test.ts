@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatIsoDate, todayIsoDate } from '#/lib/dates'
+import { formatIsoDate, formatMonth, todayIsoDate } from '#/lib/dates'
 
 describe('todayIsoDate', () => {
   it('formats the local date with zero padding', () => {
@@ -13,5 +13,12 @@ describe('formatIsoDate', () => {
       formatIsoDate('2026-09-25', 'en'),
     )
     expect(formatIsoDate('2026-09-25', 'en')).toBe('Sep 25, 2026')
+  })
+})
+
+describe('formatMonth', () => {
+  it('formats a 1-based month in the given language', () => {
+    expect(formatMonth(1, 'fr')).toBe('janvier')
+    expect(formatMonth(12, 'en')).toBe('December')
   })
 })

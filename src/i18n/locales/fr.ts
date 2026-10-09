@@ -24,6 +24,27 @@ export const fr: TranslationResources = {
   },
   incomes: {
     title: 'Revenus',
+    previousYear: 'Année précédente',
+    nextYear: 'Année suivante',
+    total: 'Total',
+    annualTotal: 'Total annuel (ma part incluse) :',
+    profile: {
+      title: 'Mes revenus',
+    },
+    form: {
+      month: 'Mois',
+      type: 'Type',
+      amount: 'Montant',
+      add: 'Ajouter',
+    },
+    household: {
+      title: 'Revenus de foyer',
+      split: 'Répartition',
+      splitBetween: 'Réparti entre',
+      splitEqually: 'Parts égales',
+      splitEquallyBetween: 'Parts égales (÷{{divisor}})',
+      share: 'Ma part',
+    },
   },
   settings: {
     title: 'Paramètres',

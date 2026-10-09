@@ -22,6 +22,27 @@ export const en = {
   },
   incomes: {
     title: 'Income',
+    previousYear: 'Previous year',
+    nextYear: 'Next year',
+    total: 'Total',
+    annualTotal: 'Annual total (my share included):',
+    profile: {
+      title: 'My income',
+    },
+    form: {
+      month: 'Month',
+      type: 'Type',
+      amount: 'Amount',
+      add: 'Add',
+    },
+    household: {
+      title: 'Household income',
+      split: 'Split',
+      splitBetween: 'Split between',
+      splitEqually: 'Equal shares',
+      splitEquallyBetween: 'Equal shares (÷{{divisor}})',
+      share: 'My share',
+    },
   },
   settings: {
     title: 'Settings',

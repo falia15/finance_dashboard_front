@@ -16,3 +16,10 @@ export function formatIsoDate(value: string, language: string) {
     new Date(year, month - 1, day),
   )
 }
+
+/** Month name (`month` from 1 to 12), e.g. `formatMonth(1, 'fr')` → "janvier". */
+export function formatMonth(month: number, language: string) {
+  return new Intl.DateTimeFormat(language, { month: 'long' }).format(
+    new Date(2000, month - 1, 1),
+  )
+}
