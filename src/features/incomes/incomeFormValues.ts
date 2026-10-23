@@ -1,4 +1,4 @@
-/** "Split between" value standing for an equal split (`member` = null). */
+/** "Split between" value standing for an equal split (`householdMember` = null). */
 export const EQUAL_SPLIT = 'equal'
 
 export interface IncomeFormValues {
@@ -6,7 +6,7 @@ export interface IncomeFormValues {
   type: string | null
   amount: string | number
   /** `EQUAL_SPLIT` or a member IRI — household rows only */
-  member: string
+  householdMember: string
 }
 
 export function emptyIncomeValues(): IncomeFormValues {
@@ -14,6 +14,6 @@ export function emptyIncomeValues(): IncomeFormValues {
     month: String(new Date().getMonth() + 1),
     type: null,
     amount: '',
-    member: EQUAL_SPLIT,
+    householdMember: EQUAL_SPLIT,
   }
 }

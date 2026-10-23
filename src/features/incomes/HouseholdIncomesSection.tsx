@@ -127,8 +127,8 @@ function HouseholdIncomesCard({
                         <Money value={row.amount} />
                       </Table.Td>
                       <Table.Td>
-                        {row.member
-                          ? nameOf(row.member)
+                        {row.householdMember
+                          ? nameOf(row.householdMember)
                           : t('incomes.household.splitEquallyBetween', {
                               divisor: row.appliedDivisor,
                             })}
@@ -143,12 +143,12 @@ function HouseholdIncomesCard({
                         <RowActions
                           incomeId={row.id}
                           label={`${typeName(row.type)} — ${monthName}`}
-                          splitOptions={splitOptions(row.member)}
+                          splitOptions={splitOptions(row.householdMember)}
                           values={{
                             month: String(row.month),
                             type: row.type,
                             amount: row.amount,
-                            member: row.member ?? EQUAL_SPLIT,
+                            householdMember: row.householdMember ?? EQUAL_SPLIT,
                           }}
                         />
                       </Table.Td>

@@ -11,7 +11,7 @@ export interface Income {
   /** Household IRI, absent on an individual row */
   household?: string | null
   /** Member receiving the whole household income, absent/null = equal split */
-  member?: string | null
+  householdMember?: string | null
   year: number
   month: number
   /** IncomeType IRI */
@@ -34,7 +34,7 @@ export interface HouseholdShare {
   type: string
   amount: string
   appliedDivisor: number
-  member: string | null
+  householdMember: string | null
   share: string
 }
 
@@ -67,8 +67,8 @@ export interface IncomeInput {
   month: number
   type: string
   amount: string
-  /** Household rows only: member IRI, null = equal split */
-  member?: string | null
+  /** Household rows only: household member IRI, null = equal split */
+  householdMember?: string | null
 }
 
 /** Exactly one owner: the profile or a household. */

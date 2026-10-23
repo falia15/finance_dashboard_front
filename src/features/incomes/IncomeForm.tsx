@@ -19,7 +19,7 @@ import {
   useIncomeTypes,
 } from '#/features/incomeTypes/queries'
 
-const FORM_FIELDS = ['month', 'type', 'amount', 'member']
+const FORM_FIELDS = ['month', 'type', 'amount', 'householdMember']
 
 interface IncomeFormProps {
   initialValues?: IncomeFormValues
@@ -74,7 +74,7 @@ export function IncomeForm({
       type: values.type ?? '',
       amount: fromCents(toCents(values.amount)),
       ...(splitOptions && {
-        member: values.member === EQUAL_SPLIT ? null : values.member,
+        householdMember: values.householdMember === EQUAL_SPLIT ? null : values.householdMember,
       }),
     }
 
@@ -151,7 +151,7 @@ export function IncomeForm({
               data={splitOptions}
               allowDeselect={false}
               w={180}
-              {...form.getInputProps('member')}
+              {...form.getInputProps('householdMember')}
             />
           )}
           <Group

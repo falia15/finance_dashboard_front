@@ -67,7 +67,7 @@ export function ProfileIncomesSection({
                             month: String(row.month),
                             type: row.type,
                             amount: row.amount,
-                            member: '',
+                            householdMember: '',
                           }}
                         />
                       </Table.Td>
