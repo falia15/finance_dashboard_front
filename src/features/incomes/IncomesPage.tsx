@@ -8,31 +8,12 @@ import {
   Title,
 } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
-import { useSearchParams } from 'react-router-dom'
+import { useYearParam } from '#/lib/useYearParam'
 import { HouseholdIncomesSection } from './HouseholdIncomesSection'
 import { Money } from './Money'
 import { ProfileIncomesSection } from './ProfileIncomesSection'
 import { YearSelector } from './YearSelector'
 import { useProfileIncomes } from './queries'
-
-/** `?year=` of the URL (kept on reload and history), current year by default. */
-function useYearParam() {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const param = Number(searchParams.get('year'))
-  const year =
-    Number.isInteger(param) && param >= 2000 && param <= 2100
-      ? param
-      : new Date().getFullYear()
-
-  function setYear(value: number) {
-    setSearchParams((params) => {
-      params.set('year', String(value))
-      return params
-    })
-  }
-
-  return [year, setYear] as const
-}
 
 export function IncomesPage() {
   const { t } = useTranslation()

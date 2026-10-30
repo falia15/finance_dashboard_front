@@ -14,6 +14,7 @@ export function AppNavbar({ onNavigate }: AppNavbarProps) {
   const links = [
     { to: '/dashboard', label: t('nav.dashboard') },
     { to: '/incomes', label: t('nav.incomes') },
+    { to: '/fixed-expenses', label: t('nav.fixedExpenses') },
   ]
 
   return (

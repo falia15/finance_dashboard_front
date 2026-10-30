@@ -9,6 +9,7 @@ import { ProfileSelectPage } from './features/profiles/ProfileSelectPage'
 import { ProfileFormPage } from './features/profiles/ProfileFormPage'
 import { HouseholdsPage } from './features/households/HouseholdsPage'
 import { IncomesPage } from './features/incomes/IncomesPage'
+import { FixedExpensesPage } from './features/fixedExpenses/FixedExpensesPage'
 import { Dashboard } from './pages/Dashboard'
 import { Settings } from './pages/Settings'
 
@@ -97,6 +98,14 @@ function App() {
             element={
               <RequireActiveProfile>
                 <IncomesPage />
+              </RequireActiveProfile>
+            }
+          />
+          <Route
+            path="/fixed-expenses"
+            element={
+              <RequireActiveProfile>
+                <FixedExpensesPage />
               </RequireActiveProfile>
             }
           />
