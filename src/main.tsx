@@ -7,7 +7,9 @@ import { Notifications } from '@mantine/notifications'
 import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css'
 import './index.css'
+import './i18n'
 import App from './App.tsx'
+import { ActiveProfileProvider } from './features/profiles/ActiveProfileContext.tsx'
 
 const queryClient = new QueryClient()
 
@@ -16,9 +18,11 @@ createRoot(document.getElementById('root')!).render(
     <MantineProvider defaultColorScheme="auto">
       <Notifications />
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <ActiveProfileProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </ActiveProfileProvider>
       </QueryClientProvider>
     </MantineProvider>
   </StrictMode>,

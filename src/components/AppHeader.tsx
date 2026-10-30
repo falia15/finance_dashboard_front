@@ -1,0 +1,93 @@
+import {
+  Avatar,
+  Burger,
+  Group,
+  Menu,
+  SegmentedControl,
+  UnstyledButton,
+} from '@mantine/core'
+import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import type { Language } from '#/i18n'
+import { useActiveProfile } from '#/features/profiles/ActiveProfileContext'
+import { useCurrentProfile } from '#/features/profiles/useCurrentProfile'
+
+interface AppHeaderProps {
+  /** Mobile navbar state, `undefined` when the page has no navbar */
+  navbarOpened?: boolean
+  onToggleNavbar?: () => void
+}
+
+export function AppHeader({ navbarOpened, onToggleNavbar }: AppHeaderProps) {
+  const { t, i18n } = useTranslation()
+  const navigate = useNavigate()
+  const { setActiveProfileId } = useActiveProfile()
+  const activeProfile = useCurrentProfile()
+
+  function handleChangeProfile() {
+    setActiveProfileId(null)
+    navigate('/profiles')
+  }
+
+  return (
+    <Group
+      h="100%"
+      px="md"
+      justify="flex-end"
+      gap="sm"
+    >
+      {navbarOpened !== undefined && (
+        <Burger
+          opened={navbarOpened}
+          onClick={onToggleNavbar}
+          hiddenFrom="sm"
+          size="sm"
+          mr="auto"
+          aria-label={t('nav.toggleNavigation')}
+        />
+      )}
+      <SegmentedControl
+        size="xs"
+        aria-label={t('nav.language')}
+        value={i18n.resolvedLanguage ?? 'en'}
+        onChange={(language) => void i18n.changeLanguage(language as Language)}
+        data={[
+          { value: 'en', label: 'EN' },
+          { value: 'fr', label: 'FR' },
+        ]}
+      />
+      {activeProfile && (
+        <Menu
+          position="bottom-end"
+          withinPortal
+        >
+          <Menu.Target>
+            <UnstyledButton aria-label={t('nav.profileMenu')}>
+              <Avatar
+                size="sm"
+                radius="xl"
+                variant="filled"
+                color={activeProfile.color ?? undefined}
+                autoContrast
+              >
+                {activeProfile.name.slice(0, 2).toUpperCase()}
+              </Avatar>
+            </UnstyledButton>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <Menu.Label>{activeProfile.name}</Menu.Label>
+            <Menu.Item onClick={handleChangeProfile}>
+              {t('nav.changeProfile')}
+            </Menu.Item>
+            <Menu.Item onClick={() => navigate('/households')}>
+              {t('nav.households')}
+            </Menu.Item>
+            <Menu.Item onClick={() => navigate('/settings')}>
+              {t('nav.settings')}
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
+      )}
+    </Group>
+  )
+}
